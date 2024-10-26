@@ -73,7 +73,7 @@ Usuario usuario= new Usuario();
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
                     throws ServletException, IOException {
-         String user = request.getParameter("txt_user");
+        String user = request.getParameter("txt_user");
         String pass = request.getParameter("txt_pass");
 
         // 2. Validar el usuario
@@ -84,11 +84,53 @@ Usuario usuario= new Usuario();
             HttpSession session = request.getSession();
             session.setAttribute("empleado", empleado);
 
+            // Obtener la URI solicitada
+            String uri = request.getRequestURI();
+
             // Verificar el rol del usuario y redirigir según corresponda
-            if ("admin".equals(empleado.getRol())) {
-                response.sendRedirect("Principal.jsp");  // Página para admins
+            String rol = empleado.getRol();
+            boolean accesoPermitido = false;
+
+            switch (rol) {
+                case "admin":
+                    accesoPermitido = true; // Admin tiene acceso a todo
+                    break;
+                case "Ventas":
+                    if (uri.contains("Principal.jsp") || uri.contains("Registro_venta.jsp")) {
+                        accesoPermitido = true;
+                    }
+                    break;
+                case "Compras":
+                    if (uri.contains("Principal.jsp") || uri.contains("Registro_compra.jsp")) {
+                        accesoPermitido = true;
+                    }
+                    break;
+                case "Bodega":
+                    if (uri.contains("Principal.jsp") || uri.contains("Producto.jsp")) {
+                        accesoPermitido = true;
+                    }
+                    break;
+                case "Clientes":
+                    if (uri.contains("Principal.jsp") || uri.contains("Cliente.jsp")) {
+                        accesoPermitido = true;
+                    }
+                    break;
+                case "RRHH":
+                    if (uri.contains("Principal.jsp") || uri.contains("Empleado.jsp")) {
+                        accesoPermitido = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            // Redirigir o mostrar mensaje si no tiene acceso
+            if (accesoPermitido) {
+                response.sendRedirect(uri); // Redirigir a la página solicitada
             } else {
-                response.sendRedirect("Registro_venta.jsp");  // Página para usuarios normales
+                // Mostrar mensaje de acceso denegado y redirigir a Principal.jsp
+                request.setAttribute("error", "No tiene acceso a esa sección.");
+                request.getRequestDispatcher("Principal.jsp").forward(request, response);
             }
         } else {
             // Enviar mensaje de error y volver a index.jsp

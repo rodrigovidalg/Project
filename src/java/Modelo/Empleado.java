@@ -156,7 +156,7 @@ public class Empleado extends Persona {
                 datos[5] = consulta.getString("dpi");
                 datos[6] = consulta.getBoolean("genero") ? "M" : "F";
                 datos[7] = consulta.getString("fecha_nacimiento");
-                datos[8] = consulta.getString("puesto"); // Ahora es 'puesto'
+                datos[8] = consulta.getString("puesto"); 
                 datos[9] = consulta.getString("fecha_inicio_labores");
                 datos[10] = consulta.getString("fecha_ingreso");
                 tabla.addRow(datos);
@@ -188,6 +188,7 @@ public class Empleado extends Persona {
             parametro.setInt(8, getId_puesto());
             parametro.setString(9, getFecha_inicio_labores());
             parametro.setString(10, getFecha_ingreso());
+            parametro.setInt(11, getId());
             retorno = parametro.executeUpdate();
             cn.cerrar_conexion();
         }catch(SQLException ex){

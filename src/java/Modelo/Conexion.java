@@ -38,4 +38,8 @@ public class Conexion {
             System.out.println("Algo salio mal :( " + ex.getMessage());
         }
     }
+     // Método para obtener la conexión
+    public Connection getConnection() {
+        return conexionDB;
+    }
 }

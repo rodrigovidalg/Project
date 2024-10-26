@@ -7,7 +7,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
+/**
+ *
+ * @author DELL
+ */
 public class Producto {
     private int id;
     private int id_marca;
@@ -102,6 +107,34 @@ public class Producto {
         this.fecha_ingreso = fecha_ingreso;
     }
 
+    public DefaultTableModel leer() {
+       DefaultTableModel tabla = new DefaultTableModel();
+       try {
+           cn = new Conexion();
+           cn.abrir_conexion();
+           String query = "SELECT * FROM productos;";
+           ResultSet consulta = cn.conexionDB.createStatement().executeQuery(query);
+           String encabezado[] = {"ID Producto", "Producto", "ID Marca", "Descripción", "Imagen", "Precio Costo", "Precio Venta", "Existencia", "Fecha Ingreso"};
+           tabla.setColumnIdentifiers(encabezado);
+           String datos[] = new String[9];
+           while (consulta.next()) {
+               datos[0] = consulta.getString("id_producto");
+               datos[1] = consulta.getString("producto");
+               datos[2] = consulta.getString("id_marca");
+               datos[3] = consulta.getString("descripcion");
+               datos[4] = consulta.getString("imagen");
+               datos[5] = consulta.getString("precio_costo");
+               datos[6] = consulta.getString("precio_venta");
+               datos[7] = consulta.getString("existencia");
+               datos[8] = consulta.getString("fecha_ingreso");
+               tabla.addRow(datos);
+           }
+           cn.cerrar_conexion();
+       } catch (SQLException ex) {
+           System.out.println("Error al leer productos: " + ex.getMessage());
+       }
+       return tabla; // Retorna el modelo con los datos de los productos
+   }
     // Método para listar los productos
     public List<Producto> listar() throws SQLException {
         List<Producto> listaProductos = new ArrayList<>();

@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import Modelo.Empleado;
 import Modelo.Puesto;
 import Modelo.Usuario;
+import jakarta.servlet.RequestDispatcher;
 
 /**
  *
@@ -258,9 +259,15 @@ public class sr_controlador extends HttpServlet {
             break;
 
         case "Nueva_compra":
-            request.getRequestDispatcher("Registro_compra.jsp").forward(request, response);
+             RequestDispatcher dispatcher = request.getRequestDispatcher("/sr_cCompras?menu=Nueva_compra");
+            dispatcher.forward(request, response);
+           
             break;
-
+        case "Proveedores":
+             //RequestDispatcher dispatcher = request.getRequestDispatcher("/sr_cCompras?menu=Proveedores");
+             //dispatcher.forward(request, response);
+             
+            break;
         case "Nueva_venta":
             request.getRequestDispatcher("Registro_venta.jsp").forward(request, response);
             break;

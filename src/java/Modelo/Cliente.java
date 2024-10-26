@@ -52,12 +52,11 @@ public class Cliente extends Persona {
     @Override
     public int agregar() {
         int retorno = 0;
-        try{
+        try {
             PreparedStatement parametro;
-            cn= new Conexion();
             cn.abrir_conexion();
             String query = "INSERT INTO clientes(nombres, apellidos, nit, genero, telefono, correo_electronico, fecha_ingreso) VALUES(?, ?, ?, ?, ?, ?, ?);";
-            parametro = (PreparedStatement) cn.conexionDB.prepareStatement(query);
+            parametro = cn.conexionDB.prepareStatement(query);
             parametro.setString(1, getNombres());
             parametro.setString(2, getApellidos());
             parametro.setString(3, getNit());
@@ -67,51 +66,48 @@ public class Cliente extends Persona {
             parametro.setString(7, getFecha_ingreso());
             retorno = parametro.executeUpdate();
             cn.cerrar_conexion();
-        } catch(SQLException ex){
-            System.out.println("Algo salio mal : " + ex.getMessage());
-            retorno = 0;
+        } catch (SQLException ex) {
+            System.out.println("Error en agregar: " + ex.getMessage());
         }
         return retorno;
     }
-    
-    
-    public DefaultTableModel leer(){
+
+    // Método para leer clientes
+    public DefaultTableModel leer() {
         DefaultTableModel tabla = new DefaultTableModel();
-        try{
-            cn = new Conexion();
+        try {
             cn.abrir_conexion();
             String query = "SELECT * FROM clientes;";
             ResultSet consulta = cn.conexionDB.createStatement().executeQuery(query);
-            String encabezado[] = {"id","nombres","apellidos", "nit","genero", "telefono", "correo_electronico","fecha_ingreso"};
+            String encabezado[] = {"id", "nombres", "apellidos", "nit", "genero", "telefono", "correo_electronico", "fecha_ingreso"};
             tabla.setColumnIdentifiers(encabezado);
-            String datos[] = new String [7];
-            while(consulta.next()){
+            String datos[] = new String[8];  // Ajustado a 8 para coincidir con los encabezados
+            while (consulta.next()) {
                 datos[0] = consulta.getString("id_cliente");
                 datos[1] = consulta.getString("nombres");
                 datos[2] = consulta.getString("apellidos");
                 datos[3] = consulta.getString("nit");
                 datos[4] = consulta.getBoolean("genero") ? "M" : "F";
                 datos[5] = consulta.getString("telefono");
-                datos[6] = consulta.getString("correo-electronico");
+                datos[6] = consulta.getString("correo_electronico");
                 datos[7] = consulta.getString("fecha_ingreso");
                 tabla.addRow(datos);
             }
             cn.cerrar_conexion();
-        }catch(SQLException ex){
-            System.out.println("Error en leer " + ex.getMessage());
+        } catch (SQLException ex) {
+            System.out.println("Error en leer: " + ex.getMessage());
         }
-            return tabla;
+        return tabla;
     }
-    
-    @Override
-    public int actualizar(){
+
+    // Método para actualizar cliente
+    public int actualizar() {
         int retorno = 0;
-        try{
+        try {
             PreparedStatement parametro;
-            cn= new Conexion();
             cn.abrir_conexion();
-            String query = "UPDATE clientes SET nombres = ?, apellidos = ?, nit = ?, genro = ?, telefono = ?, correo_electronico = ?, fecha_nacimiento = ? WHERE id_clientes = ?;";
-            parametro = (PreparedStatement) cn.conexionDB.prepareStatement(query);
+            String query = "UPDATE clientes SET nombres = ?, apellidos = ?, nit = ?, genero = ?, telefono = ?, correo_electronico = ?, fecha_ingreso = ? WHERE id_cliente = ?;";
+            parametro = cn.conexionDB.prepareStatement(query);
             parametro.setString(1, getNombres());
             parametro.setString(2, getApellidos());
             parametro.setString(3, getNit());
@@ -119,31 +115,58 @@ public class Cliente extends Persona {
             parametro.setString(5, getTelefono());
             parametro.setString(6, getCorreo_elec());
             parametro.setString(7, getFecha_ingreso());
+            parametro.setInt(8, getId());
             retorno = parametro.executeUpdate();
             cn.cerrar_conexion();
-        } catch(SQLException ex){
-            System.out.println("Algo salio mal : " + ex.getMessage());
-            retorno = 0;
+        } catch (SQLException ex) {
+            System.out.println("Error en actualizar: " + ex.getMessage());
         }
         return retorno;
     }
-    
-    @Override
-    public int eliminar(){
+
+    // Método para eliminar cliente
+    public int eliminar() {
         int retorno = 0;
-        try{
+        try {
             PreparedStatement parametro;
-            cn= new Conexion();
             cn.abrir_conexion();
             String query = "DELETE FROM clientes WHERE id_cliente = ?;";
-            parametro = (PreparedStatement) cn.conexionDB.prepareStatement(query);
+            parametro = cn.conexionDB.prepareStatement(query);
             parametro.setInt(1, getId());
             retorno = parametro.executeUpdate();
             cn.cerrar_conexion();
-        } catch(SQLException ex){
-            System.out.println("Error en borrar: " + ex.getMessage());
+        } catch (SQLException ex) {
+            System.out.println("Error en eliminar: " + ex.getMessage());
         }
         return retorno;
+    }
+
+    // Método para buscar cliente por NIT
+    public Cliente buscarPorNit(String nit) {
+        Cliente cliente = null;
+        try {
+            cn.abrir_conexion();
+            String query = "SELECT * FROM clientes WHERE nit = ?;";
+            PreparedStatement parametro = cn.conexionDB.prepareStatement(query);
+            parametro.setString(1, nit);
+            ResultSet rs = parametro.executeQuery();
+            if (rs.next()) {
+                cliente = new Cliente(
+                    rs.getInt("id_cliente"),
+                    rs.getString("nombres"),
+                    rs.getString("apellidos"),
+                    rs.getString("nit"),
+                    rs.getBoolean("genero"),
+                    rs.getString("telefono"),
+                    rs.getString("correo_electronico"),
+                    rs.getString("fecha_ingreso")
+                );
+            }
+            cn.cerrar_conexion();
+        } catch (SQLException e) {
+            System.out.println("Error en buscarPorNit: " + e.getMessage());
+        }
+        return cliente;
     }
     
     public HashMap drop_Cliente(){

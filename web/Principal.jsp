@@ -27,12 +27,12 @@
                         </li>
                         <li class="nav-item">
                             <div class="btn-group">
-                                 <a class="nav-link" href="Controlador?menu=Producto" target="frame">Almacen</a>
+                                 <a class="nav-link" href="Controlador?menu=Producto" target="frame" style="color: white;">Almacen</a>
                                 <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                     <span class="visually-hidden">Toggle Dropdown</span>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="Controlador?menu=Inventario" target="frame">Inventario</a></li>   
+                                    <li><a class="dropdown-item" href="Controlador?menu=Cliente" target="frame">Inventario</a></li>   
                                     <li><hr class="dropdown-divider"></li>
                                 </ul>
                             </div>                        

@@ -62,6 +62,7 @@ public void eliminarDetallesPorIdCompra(int idCompra) {
 public void agregarCompraYDetalles(Compras compra, List<DetalleCompra> detalles) {
     PreparedStatement parametroCompra = null;
     PreparedStatement parametroDetalle = null;
+    PreparedStatement parametroProducto = null;
 
     try {
         cn = new Conexion(); // Inicializa la conexión
@@ -100,6 +101,21 @@ public void agregarCompraYDetalles(Compras compra, List<DetalleCompra> detalles)
 
             // Ejecutar la consulta de detalle
             parametroDetalle.executeUpdate();
+
+            // 3. Actualizar el saldo del producto y los precios
+            String queryProducto = "UPDATE productos SET existencia = existencia + ?, precio_costo = ?, precio_venta = ? WHERE id_producto = ?";
+            parametroProducto = cn.conexionDB.prepareStatement(queryProducto);
+            
+            double nuevoPrecioCosto = detalle.getPrecio_costo_unitario(); // Precio costo ingresado
+            double nuevoPrecioVenta = nuevoPrecioCosto * 1.25; // Precio venta con un 25% más
+
+            parametroProducto.setInt(1, detalle.getCantidad()); // Aumentar existencia
+            parametroProducto.setDouble(2, nuevoPrecioCosto); // Actualizar precio costo
+            parametroProducto.setDouble(3, nuevoPrecioVenta); // Actualizar precio venta
+            parametroProducto.setInt(4, detalle.getId_producto()); // ID del producto
+
+            // Ejecutar actualización del producto
+            parametroProducto.executeUpdate();
         }
 
     } catch (SQLException ex) {
@@ -111,6 +127,9 @@ public void agregarCompraYDetalles(Compras compra, List<DetalleCompra> detalles)
             }
             if (parametroDetalle != null) {
                 parametroDetalle.close();
+            }
+            if (parametroProducto != null) {
+                parametroProducto.close();
             }
             if (cn != null) {
                 cn.cerrar_conexion(); // Cierra la conexión
@@ -124,6 +143,7 @@ public void agregarCompraYDetalles(Compras compra, List<DetalleCompra> detalles)
 public void actualizarCompraYDetalles(Compras compra, List<DetalleCompra> detalles) {
     PreparedStatement parametroCompra = null;
     PreparedStatement parametroDetalle = null;
+    PreparedStatement parametroProducto = null;
 
     try {
         cn = new Conexion(); // Inicializa la conexión
@@ -145,13 +165,14 @@ public void actualizarCompraYDetalles(Compras compra, List<DetalleCompra> detall
         // 2. Eliminar los detalles existentes antes de agregar los nuevos
         eliminarDetallesPorIdCompra(compra.getId_compra()); // Método para eliminar detalles existentes
 
-        // 3. Insertar los nuevos detalles
+        // 3. Insertar los nuevos detalles y actualizar productos
         String queryDetalle = "INSERT INTO compras_detalle (id_compra, id_producto, cantidad, precio_costo_unitario) VALUES (?, ?, ?, ?)";
         parametroDetalle = cn.conexionDB.prepareStatement(queryDetalle);
 
         for (DetalleCompra detalle : detalles) {
             detalle.setId_compra(compra.getId_compra()); // Establecer el ID de compra
 
+            // Insertar el detalle
             parametroDetalle.setInt(1, detalle.getId_compra());
             parametroDetalle.setInt(2, detalle.getId_producto());
             parametroDetalle.setInt(3, detalle.getCantidad());
@@ -159,6 +180,21 @@ public void actualizarCompraYDetalles(Compras compra, List<DetalleCompra> detall
 
             // Ejecutar la consulta de detalle
             parametroDetalle.executeUpdate();
+
+            // 4. Actualizar el saldo del producto y los precios
+            String queryProducto = "UPDATE productos SET existencia = existencia + ?, precio_costo = ?, precio_venta = ? WHERE id_producto = ?";
+            parametroProducto = cn.conexionDB.prepareStatement(queryProducto);
+            
+            double nuevoPrecioCosto = detalle.getPrecio_costo_unitario(); // Precio costo ingresado
+            double nuevoPrecioVenta = nuevoPrecioCosto * 1.25; // Precio venta con un 25% más
+
+            parametroProducto.setInt(1, detalle.getCantidad()); // Aumentar existencia
+            parametroProducto.setDouble(2, nuevoPrecioCosto); // Actualizar precio costo
+            parametroProducto.setDouble(3, nuevoPrecioVenta); // Actualizar precio venta
+            parametroProducto.setInt(4, detalle.getId_producto()); // ID del producto
+
+            // Ejecutar actualización del producto
+            parametroProducto.executeUpdate();
         }
 
     } catch (SQLException ex) {
@@ -170,6 +206,9 @@ public void actualizarCompraYDetalles(Compras compra, List<DetalleCompra> detall
             }
             if (parametroDetalle != null) {
                 parametroDetalle.close();
+            }
+            if (parametroProducto != null) {
+                parametroProducto.close();
             }
             if (cn != null) {
                 cn.cerrar_conexion(); // Cierra la conexión

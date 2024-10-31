@@ -5,7 +5,7 @@
 --%>
 <%@page import="Modelo.Compras"%>
 <%@page import="Modelo.Proveedores"%>
-<%@page import="Modelo.Productos"%>
+<%@page import="Modelo.Producto"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="javax.swing.table.DefaultTableModel"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -87,7 +87,7 @@
                                 <label for='id_producto'><b>Producto:</b></label>
                                 <select name='id_producto[]' class='form-control' id="selectProductos" required>
                                     <% 
-                                        Productos productos = new Productos();
+                                        Producto productos = new Producto();
                                         DefaultTableModel tablaProductos = productos.leer();
                                         for (int t = 0; t < tablaProductos.getRowCount(); t++) {
                                             out.println("<option value='" + tablaProductos.getValueAt(t, 0) + "'>" + tablaProductos.getValueAt(t, 1) + "</option>");

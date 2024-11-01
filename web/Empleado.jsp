@@ -5,7 +5,6 @@
 --%>
 <%@page import="Modelo.Puesto"%>
 <%@page import="Modelo.Empleado"%>
-<%@page import="Modelo.Usuario"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="javax.swing.table.DefaultTableModel"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -20,33 +19,30 @@
     </head>
     <body>
         <div class="container">
-        <!-- Card for Modals -->
-        <div class="form-group">
-            <div class="card">
-                <div class="card-header text-white" style="background-color: #90b4ce">
-                    <h2>Panel de Control del Personal</h2>
-                </div>
-                <div class="card-body">
-                    <!-- Button trigger for Empleado Nuevo Modal -->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_empleado" onclick="limpiarEmpleado();">
-                        Empleado Nuevo
-                    </button>
-                    
-                    <!-- Button trigger for Puesto Nuevo Modal -->
-                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modal_puesto" onclick="limpiarPuesto();">
-                        Puesto Nuevo
-                    </button>
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_usuario" onclick="limpiarUsuario();">
-                        Usuario Nuevo
-                    </button>
-                    <div class="form-group">
-                        <label for="searchField">Buscar:</label>
-                        <input type="text" id="searchField" style="margin-bottom: 20px;" class="form-control" placeholder="Ejemplo: tabla empleados, nombre empleado...">
-                        <button type="button" class="btn btn-primary mt-2" onclick="buscar()">Buscar</button>
+            <div class="form-group">
+                <div class="card">
+                    <div class="card-header text-white" style="background-color: #90b4ce">
+                        <h2>Panel de Control del Personal</h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- Contenedor para la imagen y el botón -->
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-person-fill" style="font-size: 150px; margin-right: 15px;"></i>
+                            <!-- Botón de Empleado Nuevo -->
+                            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal_empleado" onclick="limpiarEmpleado();">
+                                Empleado Nuevo
+                            </button>
+                            <div class="ms-auto"> 
+                                <label for="searchField" class="me-3">Buscar Empleado:</label> 
+                                <div class="input-group">
+                                    <input type="text" id="searchField" class="form-control" style="width: 300px;" placeholder="Ingresa el empleado a buscar..."> <!-- Aumentar el ancho -->
+                                    <button type="button" class="btn btn-primary ms-2" onclick="buscar()">Buscar</button> <!-- Añadir margen izquierdo -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
         <!-- Empleado Nuevo Modal -->
         <div class="modal fade" id="modal_empleado" tabindex="-1" role="dialog" aria-labelledby="modal_empleadoLabel" aria-hidden="true">
@@ -55,7 +51,7 @@
                     <div class="modal-body">
                         <!-- Formulario de Empleado -->
                         <form action="Controlador?menu=Empleado" method="post" class="form-group">
-                            <div class="card-header text-center">
+                            <div class="card text-center">
                                 <h3>Control de Empleados</h3>
                             </div>
                             <label for="lbl_id">ID</label>
@@ -77,20 +73,17 @@
                             <input type="number" name="txt_dpi" id="txt_dpi" class="form-control" placeholder="3027405800101" required>
 
                             <label for="lbl_genero">Género</label>
-                            <div>
-                                <label>
-                                    <input type="radio" name="txt_genero" value="true" required> Masculino
-                                </label>
-                                <label>
-                                    <input type="radio" name="txt_genero" value="false" required> Femenino
-                                </label>
-                            </div>
+                            <select name="txt_genero" id="txt_genero" class="form-control" required>
+                                <option value="">Seleccione género</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
 
                             <label for="lbl_fn">Nacimiento</label>
                             <input type="date" name="txt_fn" id="txt_fn" class="form-control" required>
 
                             <label for="lbl_puesto">Puesto</label>
-                            <select name="drop_puesto" id="drop_puesto" class="form-control">
+                            <select name="drop_puesto" id="drop_puesto" class="form-control" required>
                                 <%
                                     Puesto puesto = new Puesto();
                                     HashMap<String, String> drop = puesto.drop_puesto();
@@ -121,77 +114,12 @@
             </div>
         </div>
 
-
-        <!-- Puesto Nuevo Modal -->
-        <div class="modal fade" id="modal_puesto" tabindex="-1" role="dialog" aria-labelledby="modal_puesto" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <form action="Controlador?menu=Puesto" method="post" class="form-group">
-                            <div class="card-header text-center">
-                                <h3>Control de Puestos</h3>
-                            </div>
-                            <label for="lbl_id_puesto">ID</label>
-                            <input type="text" name="txt_id_puesto" id="txt_id_puesto" class="form-control" value="0" readonly>
-                            <label for="lbl_nombre_puesto">Nombre del Puesto</label>
-                            <input type="text" name="txt_nombre_puesto" id="txt_nombre_puesto" class="form-control" required placeholder="Ingrese el nombre del puesto">
-                            <br/>
-                            <button type="submit" name="action" id="btn_agregarP" value="agregarP" class="btn btn-primary btn-lg">Agregar</button>
-                            <button type="submit" name="action" id="btn_actualizarP" value="actualizarP" class="btn btn-success btn-lg">Actualizar</button>
-                            <button type="submit" name="action" id="btn_eliminarP" value="eliminarP" class="btn btn-danger btn-lg" onclick="javascript:if(!confirm('Desea eliminar'))return false">Eliminar</button>
-                            <button type="button" class="btn btn-warning btn-lg" data-bs-dismiss="modal">Cerrar</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-              
-        <!-- Usuario Nuevo Modal -->
-            <div class="modal fade" id="modal_usuario" tabindex="-1" role="dialog" aria-labelledby="modal_usuario" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <form action="Controlador?menu=Usuario" method="post" class="form-group">
-                                <div class="card-header text-center">
-                                    <h3>Control de Usuarios</h3>
-                                </div>
-                                <label for="lbl_id_usuario">ID</label>
-                                <input type="text" name="txt_id_usuario" id="txt_id_usuario" class="form-control" value="0" readonly>
-
-                                <label for="lbl_nombre_usuario">Nombre de Usuario</label>
-                                <input type="text" name="txt_nombre_usuario" id="txt_nombre_usuario" class="form-control" required placeholder="Ingrese el nombre de usuario">
-
-                                <label for="lbl_contraseña">Contraseña</label>
-                                <input type="password" name="txt_contraseña" id="txt_contraseña" class="form-control" required placeholder="Ingrese la contraseña">
-
-                                <label for="lbl_rol">Rol</label>
-                                <select name="drop_puestoU" id="drop_puestoU" class="form-control">
-                                    <%
-                                        Puesto puestoU = new Puesto();
-                                        HashMap<String, String> dropU = puesto.drop_puesto();
-                                        for (String i : drop.keySet()) {
-                                            out.write("<option value='" + i + "'>" + drop.get(i) + "</option>");
-                                        }
-                                    %>
-                                </select>
-                                <br/>
-                                <button name="action" id="btn_agregarU" value="agregarU" class="btn btn-primary btn-lg">Agregar</button>
-                                <button name="action" id="btn_actualizarU" value="actualizarU" class="btn btn-success btn-lg">Actualizar</button>
-                                <button name="action" id="btn_eliminarU" value="eliminarU" class="btn btn-danger btn-lg" onclick="javascript:if(!confirm('¿Desea eliminar?'))return false">Eliminar</button>
-                                <button type="button" class="btn btn-warning btn-lg" data-bs-dismiss="modal">Cerrar</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-          
-
-            <table class="table table-striped table-hover">
+            <table class="table table-striped table-hover custom-table">
                 <thead>
-                    <div class="card-header text-center">
-                        <h2>Datos personales y laborales de los Empleados</h2>
-                    </div>
                     <tr>
+                        <div class="card-header text-center">
+                            <h2>Datos personales y laborales de los Empleados</h2>
+                        </div>
                         <th>ID</th>
                         <th>Nombres</th>
                         <th>Apellidos</th>
@@ -211,6 +139,7 @@
                         DefaultTableModel tabla = new DefaultTableModel();
                         tabla = empleado.leer();
                         for (int t = 0; t < tabla.getRowCount(); t++) {
+                            out.println("<tr>");
                             out.println("<td>" + tabla.getValueAt(t, 0) + "</td>");
                             out.println("<td>" + tabla.getValueAt(t, 1) + "</td>");
                             out.println("<td>" + tabla.getValueAt(t, 2) + "</td>");
@@ -229,65 +158,6 @@
             </table>
             <br/>
             <br/>
-                
-            <!-- Tabla para mostrar los puestos -->
-            <table class="table table-striped table-hover">
-                <thead>
-                    <div class="card-header text-center">
-                        <h2>Clasificación de Puestos</h2>
-                    </div>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre del Puesto</th>
-                    </tr>
-                </thead>
-                <tbody id="tbl_puestos">
-                    <%
-                        DefaultTableModel tablaP = puesto.leer(); 
-                        for (int t = 0; t < tablaP.getRowCount(); t++) {
-                            out.println("<tr data-id='" + tablaP.getValueAt(t, 0) + "'>");
-                            out.println("<td>" + tablaP.getValueAt(t, 0) + "</td>");
-                            out.println("<td>" + tablaP.getValueAt(t, 1) + "</td>");
-                            out.println("</tr>");
-                        }
-                    %>
-                </tbody>
-            </table>
-            <br/>
-            <br/>
-            
-            
-            
-            <!-- Tabla para mostrar los usuarios -->
-            <table class="table table-striped table-hover">
-                <thead>
-                    <div class="card-header text-center">
-                        <h2>Clasificación de Usuarios</h2>
-                    </div>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre de Usuario</th>
-                        <th>Contraseña</th>
-                        <th>Rol</th>
-                    </tr>
-                </thead>
-                <tbody id="tbl_usuarios">
-                    <%
-                        Usuario usuario = new Usuario();
-                        DefaultTableModel tablaU = usuario.leer(); // Obtener el modelo de la tabla
-                        for (int t = 0; t < tablaU.getRowCount(); t++) {
-                            out.println("<tr data-id='" + tablaU.getValueAt(t, 0) + "'>");
-                            out.println("<td>" + tablaU.getValueAt(t, 0) + "</td>");
-                            out.println("<td>" + tablaU.getValueAt(t, 1) + "</td>");
-                            out.println("<td>" + tablaU.getValueAt(t, 2) + "</td>");
-                            out.println("<td>" + tablaU.getValueAt(t, 3) + "</td>");
-                            out.println("</tr>");
-                        }
-                    %>
-                </tbody>
-            </table>
-            <br/>
-
         </div>
 
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
@@ -301,7 +171,7 @@
                     $("#txt_direccion").val('');
                     $("#txt_telefono").val('');
                     $("#txt_dpi").val('');
-                    $("input[name='txt_genero']").prop('checked', false); // Limpiar radio buttons
+                    $("input[name='txt_genero']").prop('checked', false); 
                     $("#txt_fn").val('');
                     $("#drop_puesto").val(1);
                     $("#txt_fl").val('');
@@ -332,65 +202,20 @@
                 $('#txt_direccion').val(direccion);
                 $('#txt_telefono').val(telefono);
                 $('#txt_dpi').val(dpi);
-                if (genero === 'Masculino') {
-                    $("input[name='txt_genero'][value='true']").prop('checked', true);
-                } else {
-                    $("input[name='txt_genero'][value='false']").prop('checked', true);
-                }
-                $('#txt_fn').val(nacimiento);
-                $('#drop_puesto').val(puesto);
+                $('#txt_genero').val(genero);
+                $('#txt_fn').val(nacimiento); 
                 $('#txt_fl').val(inicio_laboral);
                 $('#txt_fi').val(fecha_ingreso);
+                
+                $('#drop_puesto option').each(function() {
+                    if ($(this).text() === puesto) { // Comparar el nombre del puesto
+                        $('#drop_puesto').val($(this).val()); // Asignar el valor del ID correspondiente
+                        return false; // Salir del bucle
+                    }
+                });
 
                 // Abrir el modal de empleado
                 var modal = new bootstrap.Modal(document.getElementById("modal_empleado"));
-                modal.show();
-            });
-
-            function limpiarPuesto() {
-                $("#txt_nombre_puesto").val('');
-                $("#txt_id_puesto").val('0'); // Reseteamos a 0 al limpiar
-                $("#modal_puesto").val('');
-            }
-
-            $('#tbl_puestos').on('click', 'tr', function () {
-                // Capturamos el ID de la fila que se ha clicado
-                var id = $(this).data('id'); // Obtener el ID de la fila
-                var nombre_puesto = $(this).find("td").eq(1).text(); // Obtener el nombre del puesto de la segunda celda
-
-                // Asignamos los valores a los inputs del modal
-                $("#txt_id_puesto").val(id);
-                $("#txt_nombre_puesto").val(nombre_puesto);
-
-                // Abrimos el modal
-                var modal = new bootstrap.Modal(document.getElementById("modal_puesto"));
-                modal.show();
-            });
-            
-            // Limpiar campos y abrir modal de usuario
-            function limpiarUsuario() {
-                $("#txt_nombre_usuario").val('');
-                $("#txt_id_usuario").val('0');
-                $("#txt_contraseña").val('');
-                $("#txt_rol").val('');
-                $("#drop_puestoU").val('0');
-            }
-
-            $('#tbl_usuarios').on('click', 'tr', function () {
-                // Capturamos el ID de la fila que se ha clicado
-                var id = $(this).data('id'); // Obtener el ID de la fila
-                var nombre_usuario = $(this).find("td").eq(1).text();
-                var contraseña = $(this).find("td").eq(2).text();
-                var rol = $(this).find("td").eq(3).text();
-
-                // Asignamos los valores a los inputs del modal
-                $("#txt_id_usuario").val(id); // Asegúrate de usar el ID correcto
-                $("#txt_nombre_usuario").val(nombre_usuario); // Establecemos el nombre
-                $("#txt_contraseña").val(contraseña); // Establecemos la contraseña
-                $("#drop_puestoU").val(rol); // Establecemos el rol
-
-                // Abrimos el modal
-                var modal = new bootstrap.Modal(document.getElementById("modal_usuario"));
                 modal.show();
             });
         </script>
@@ -406,21 +231,7 @@
                     $(this).toggle(isMatch);
                     if (isMatch) found = true; // Actualiza found si hay coincidencias
                 });
-
-                // Filtrar puestos
-                $('#tbl_puestos tr').filter(function() {
-                    const isMatch = $(this).text().toLowerCase().indexOf(searchTerm) > -1;
-                    $(this).toggle(isMatch);
-                    if (isMatch) found = true; // Actualiza found si hay coincidencias
-                });
-
-                // Filtrar usuarios
-                $('#tbl_usuarios tr').filter(function() {
-                    const isMatch = $(this).text().toLowerCase().indexOf(searchTerm) > -1;
-                    $(this).toggle(isMatch);
-                    if (isMatch) found = true; // Actualiza found si hay coincidencias
-                });
-
+                
                 // Mostrar alerta si no se encontraron resultados
                 if (!found) {
                     alert("No se encontraron resultados.");

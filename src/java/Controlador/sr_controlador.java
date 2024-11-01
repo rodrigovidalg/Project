@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import Modelo.Empleado;
 import Modelo.Puesto;
 import Modelo.Usuario;
-import jakarta.servlet.RequestDispatcher;
 
 /**
  *
@@ -76,12 +75,17 @@ public class sr_controlador extends HttpServlet {
             String fechaIngreso = request.getParameter("txt_fi");
 
             // Validar que los campos requeridos no estén vacíos
-            if (nombres == null || nombres.isEmpty() || apellidos == null || apellidos.isEmpty() ||
-                direccion == null || direccion.isEmpty() || telefono == null || telefono.isEmpty() ||
-                dpi == null || dpi.isEmpty() || fechaNacimiento == null || fechaNacimiento.isEmpty() ||
-                puestos == 0 || fechaInicioLabores == null || fechaInicioLabores.isEmpty() || 
+            if (nombres == null || nombres.isEmpty() || 
+                apellidos == null || apellidos.isEmpty() ||
+                direccion == null || direccion.isEmpty() || 
+                telefono == null || telefono.isEmpty() ||
+                dpi == null || dpi.isEmpty() || 
+                fechaNacimiento == null || fechaNacimiento.isEmpty() ||
+                puestos == 0 || 
+                fechaInicioLabores == null || fechaInicioLabores.isEmpty() || 
                 fechaIngreso == null || fechaIngreso.isEmpty()) {
-                
+
+                request.setAttribute("errorMessage", "Todos los campos son obligatorios."); // Mensaje de error
                 request.getRequestDispatcher("Empleado.jsp").forward(request, response); // Mantener la vista
                 return;
             }
@@ -95,7 +99,8 @@ public class sr_controlador extends HttpServlet {
                     if (empleado.agregar() > 0) {
                         response.sendRedirect("Empleado.jsp");
                     } else {
-                        response.getWriter().println("<h1>Error al agregar empleado</h1>");
+                        request.setAttribute("errorMessage", "Error al agregar empleado.");
+                        request.getRequestDispatcher("Empleado.jsp").forward(request, response);
                     }
                     break;
 
@@ -103,7 +108,8 @@ public class sr_controlador extends HttpServlet {
                     if (empleado.actualizar() > 0) {
                         response.sendRedirect("Empleado.jsp");
                     } else {
-                        response.getWriter().println("<h1>Error al actualizar empleado</h1>");
+                        request.setAttribute("errorMessage", "Error al actualizar empleado.");
+                        request.getRequestDispatcher("Empleado.jsp").forward(request, response);
                     }
                     break;
 
@@ -111,80 +117,73 @@ public class sr_controlador extends HttpServlet {
                     if (empleado.eliminar() > 0) {
                         response.sendRedirect("Empleado.jsp");
                     } else {
-                        response.getWriter().println("<h1>Error al eliminar empleado</h1>");
+                        request.setAttribute("errorMessage", "Error al eliminar empleado.");
+                        request.getRequestDispatcher("Empleado.jsp").forward(request, response);
                     }
                     break;
 
                 default:
-                    response.getWriter().println("<h1>Acción no válida</h1>");
+                    request.setAttribute("errorMessage", "Acción no válida.");
+                    request.getRequestDispatcher("Empleado.jsp").forward(request, response);
                     break;
             }
             break;
+
             
         case "Puesto":
             // Obtener los parámetros del formulario
-            String idPuestoStr = request.getParameter("txt_id_puesto");
-            int id_Puesto = 0; // Valor por defecto
-            if (idPuestoStr != null && !idPuestoStr.isEmpty()) {
+            String idStrP = request.getParameter("txt_id_puesto");
+            int idPuesto = 0; // Valor por defecto
+            if (idStrP != null && !idStrP.isEmpty()) {
                 try {
-                    id_Puesto = Integer.parseInt(idPuestoStr);
+                    idPuesto = Integer.parseInt(idStrP);
                 } catch (NumberFormatException e) {
-                    // Si hay error en el formato del ID, redirige a la página con un mensaje de error
-                    request.setAttribute("error", "El ID del puesto no es válido.");
-                    request.getRequestDispatcher("Empleado.jsp").forward(request, response);
+                    response.sendRedirect("Puesto.jsp"); // Redirigir en caso de error
                     return;
                 }
             }
 
-            String nombre_puesto = request.getParameter("txt_nombre_puesto");
+            String nombrePuesto = request.getParameter("txt_nombre_puesto");
 
-            // Validar que los campos requeridos no estén vacíos
-            if (nombre_puesto == null || nombre_puesto.isEmpty()) {
-                request.setAttribute("error", "El nombre del puesto es obligatorio.");
-                request.getRequestDispatcher("Empleado.jsp").forward(request, response); // Mantener la vista
+            // Validar que el nombre del puesto no esté vacío
+            if (nombrePuesto == null || nombrePuesto.isEmpty()) {
+                request.getRequestDispatcher("Puesto.jsp").forward(request, response); // Mantener la vista
                 return;
             }
 
-            // Crear instancia de Puesto con los datos del formulario
-            Puesto puesto = new Puesto(id_Puesto, nombre_puesto);
+            // Crear instancia de Puesto
+            Puesto puesto = new Puesto(idPuesto, nombrePuesto); // Asegúrate de que el constructor de Puesto acepte estos parámetros
 
             // Validar la acción (agregar, actualizar, eliminar)
-                switch (action) {
-                    case "agregarP":
-                        try {
-                            puesto.agregar();
-                            response.sendRedirect("Empleado.jsp");
-                        } catch (Exception e) {
-                            request.setAttribute("error", "Error al agregar el puesto.");
-                            request.getRequestDispatcher("Empleado.jsp").forward(request, response);
-                        }
-                        break;
+            switch (action) {
+                case "agregarP":
+                    if (puesto.agregar() > 0) {
+                        response.sendRedirect("Puesto.jsp");
+                    } else {
+                        response.getWriter().println("<h1>Error al agregar puesto</h1>");
+                    }
+                    break;
 
-                    case "actualizarP":
-                        try {
-                            puesto.actualizar();
-                            response.sendRedirect("Empleado.jsp");
-                        } catch (Exception e) {
-                            request.setAttribute("error", "Error al actualizar el puesto.");
-                            request.getRequestDispatcher("Empleado.jsp").forward(request, response);
-                        }
-                        break;
+                case "actualizarP":
+                    if (puesto.actualizar() > 0) {
+                        response.sendRedirect("Puesto.jsp");
+                    } else {
+                        response.getWriter().println("<h1>Error al actualizar puesto</h1>");
+                    }
+                    break;
 
-                    case "eliminarP":
-                        try {
-                            puesto.setId_Puesto(id_Puesto); // Asegúrate de establecer el ID antes de eliminar
-                            puesto.eliminarPuesto();
-                            response.sendRedirect("Empleado.jsp");
-                        } catch (Exception e) {
-                            request.setAttribute("error", "Error al eliminar el puesto.");
-                            request.getRequestDispatcher("Empleado.jsp").forward(request, response);
-                        }
-                        break;
+                case "eliminarP":
+                    if (puesto.eliminar() > 0) {
+                        response.sendRedirect("Puesto.jsp");
+                    } else {
+                        response.getWriter().println("<h1>Error al eliminar puesto</h1>");
+                    }
+                    break;
 
-                    default:
-                        response.getWriter().println("<h1>Acción no válida</h1>");
-                        break;
-                }
+                default:
+                    response.sendRedirect("Puesto.jsp");
+                    break;
+            }
             break;
         
         case "Usuario":
@@ -259,15 +258,9 @@ public class sr_controlador extends HttpServlet {
             break;
 
         case "Nueva_compra":
-             RequestDispatcher dispatcher = request.getRequestDispatcher("/sr_cCompras?menu=Nueva_compra");
-            dispatcher.forward(request, response);
-           
+            request.getRequestDispatcher("Registro_compra.jsp").forward(request, response);
             break;
-        case "Proveedores":
-             //RequestDispatcher dispatcher = request.getRequestDispatcher("/sr_cCompras?menu=Proveedores");
-             //dispatcher.forward(request, response);
-             
-            break;
+
         case "Nueva_venta":
             request.getRequestDispatcher("Registro_venta.jsp").forward(request, response);
             break;

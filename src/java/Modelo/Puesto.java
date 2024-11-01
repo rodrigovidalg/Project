@@ -117,7 +117,7 @@ public class Puesto {
     }
 
     // Método para eliminar un puesto
-    public int eliminarPuesto() {
+    public int eliminar() {
         int retorno =0;
         try {
             PreparedStatement parametro;

@@ -5,6 +5,10 @@
         <servlet-class>Controlador.sr_controlador</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ControladorMenus</servlet-name>
+        <servlet-class>Controlador.sr_cMenus</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>Validar</servlet-name>
         <servlet-class>Controlador.sr_validar</servlet-class>
     </servlet>
@@ -39,5 +43,9 @@
     <servlet-mapping>
         <servlet-name>sr_cVenta</servlet-name>
         <url-pattern>/sr_cVenta</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ControladorMenus</servlet-name>
+        <url-pattern>/ControladorMenus</url-pattern>
     </servlet-mapping>
 </web-app>

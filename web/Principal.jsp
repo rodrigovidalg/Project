@@ -3,78 +3,131 @@
     Created on : 13/10/2024, 7:21:38 a. m.
     Author     : DELL
 --%>
-
+<%@page import="java.sql.*"%>
+<%@page import="java.util.*"%>
+<%@page import="Modelo.Menu"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Página Principal</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    </head>
-    <body style="background-color: #d8eefe;"> <!-- Color de fondo suave -->
-        <!-- Menú principal -->
-        <nav class="navbar navbar-expand-lg" style="background-color: #094067;"> <!-- Color principal de la navbar -->
-            <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="Controlador?menu=Producto" target="frame" style="color: white;">Almacen</a>
-                        </li>
-                        <li class="nav-item">
-                            <div class="btn-group">
-                                 <a class="nav-link" href="Controlador?menu=Producto" target="frame" style="color: white;">Almacen</a>
-                                <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span class="visually-hidden">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="Controlador?menu=Cliente" target="frame">Inventario</a></li>   
-                                    <li><hr class="dropdown-divider"></li>
-                                </ul>
-                            </div>                        
-                      </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="Controlador?menu=Empleado" target="frame" style="color: white;">Gestión de Empleados</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="Controlador?menu=Cliente" target="frame" style="color: white;">Clientes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="Controlador?menu=Nueva_venta" target="frame" style="color: white;">Ventas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="Controlador?menu=Nueva_compra" target="frame" style="color: white;">Compras</a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- Botón Usuario -->
-                <div class="dropdown">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Página Principal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"> <!-- Iconos de Bootstrap -->
+    <style>
+        .nav-link {
+            color: white !important;
+        }
+        .dropdown-item {
+            color: black !important;
+        }
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+            color: black !important;
+        }
+        .dropdown-submenu {
+            position: relative;
+        }
+        .dropdown-submenu .dropdown-menu {
+            left: 100%;
+            top: 0;
+            margin-top: 0;
+        }
+        .usuario-dropdown {
+            margin-left: auto; /* Mueve el dropdown al extremo derecho */
+        }
+        .content-container {
+            max-width: 1200px; /* Max ancho para centrar contenido */
+            margin: 0 auto; /* Centra el contenedor */
+            padding: 20px; /* Espaciado interno */
+            border: 1px solid #094067; /* Borde del contenedor */
+            background-color: white; /* Fondo blanco */
+            border-radius: 8px; /* Bordes redondeados */
+        }
+    </style>
+</head>
+<body style="background-color: #d8eefe;">
+    <nav class="navbar navbar-expand-lg" style="background-color: #094067;">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <%
+                        // Conexión a la base de datos y obtención de menús
+                        List<Menu> menus = new ArrayList<>();
+                        try {
+                            Menu menu = new Menu();
+                            menus = menu.obtenerMenus();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        // Creación de estructura jerárquica
+                        Map<Integer, List<Menu>> menuTree = new HashMap<>();
+                        for (Menu item : menus) {
+                            menuTree.computeIfAbsent(item.getRamaPadre(), k -> new ArrayList<>()).add(item);
+                        }
+
+                        // Renderización del menú principal
+                        List<Menu> rootMenus = menuTree.getOrDefault(null, new ArrayList<>());
+                        out.print("<ul class='navbar-nav'>");
+
+                        for (Menu item : rootMenus) {
+                            out.print("<li class='nav-item dropdown'>");
+                            out.print("<a class='nav-link dropdown-toggle' href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'>" + item.getNombre() + "</a>");
+
+                            // Verificar si hay submenús en primer nivel
+                            List<Menu> subItems = menuTree.get(item.getId());
+                            if (subItems != null && !subItems.isEmpty()) {
+                                out.print("<ul class='dropdown-menu'>");
+                                for (Menu subItem : subItems) {
+                                    out.print("<li class='dropdown-submenu'>");
+                                    out.print("<a class='dropdown-item dropdown-toggle' href='sr_cMenus?menu=" + subItem.getNombre() + "' target='frame'>" + subItem.getNombre() + "</a>");
+
+                                    // Verificar si hay submenús de segundo nivel
+                                    List<Menu> subSubItems = menuTree.get(subItem.getId());
+                                    if (subSubItems != null && !subSubItems.isEmpty()) {
+                                        out.print("<ul class='dropdown-menu'>");
+                                        for (Menu subSubItem : subSubItems) {
+                                            out.print("<li>");
+                                            out.print("<a class='dropdown-item' href='sr_cMenus?menu=" + subSubItem.getNombre() + "' target='frame'>" + subSubItem.getNombre() + "</a>");
+                                            out.print("</li>");
+                                        }
+                                        out.print("</ul>");
+                                    }
+                                    out.print("</li>");
+                                }
+                                out.print("</ul>");
+                            }
+
+                            out.print("</li>");
+                        }
+
+                        out.print("</ul>");
+                    %>
+                </ul>
+                <!-- Sección del botón de usuario fuera de la lista de navegación -->
+                <div class="dropdown usuario-dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #094067; border-color: #094067;">
-                        ${empleado.nombres}
+                        <i class="bi bi-person" style="font-size: 30px;"></i> <!-- Icono de usuario -->
                     </button>
                     <ul class="dropdown-menu" style="background-color: #5f6c7b;">
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-file-person" style="font-size: 40px;"></i></a></li>
-                        <li><a class="dropdown-item" href="#" style="color: black;">${empleado.nombres}</a></li> <!-- Color de texto -->
+                        <li><a class="dropdown-item" href="#" style="color: white;">${empleado.nombres}</a></li>
                         <li>
-                            <a class="dropdown-item" href="index.jsp" style="color: black;">Salir</a> <!-- Redirigir al index.jsp al salir -->
+                            <a class="dropdown-item" href="index.jsp" style="color: white;">Salir</a>
                         </li>
                     </ul>
                 </div>
-
             </div>
-        </nav>
-
-        <!-- Contenedor del iframe -->
-        <div class="container mt-4" style="height: 650px;">
-            <iframe name="frame" style="height: 100%; width: 100%; border: none"></iframe>       
         </div>
-
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-    </body>
+    </nav>
+    <div class="content-container mt-4">
+        <div class="container" style="height: 530px;">
+            <iframe name="frame" style="height: 100%; width: 100%; border: none"></iframe>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

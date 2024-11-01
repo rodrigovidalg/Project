@@ -13,6 +13,10 @@
         <servlet-class>Controlador.sr_validar</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>sr_cCliente</servlet-name>
+        <servlet-class>Controlador.sr_cCliente</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>sr_cIndex</servlet-name>
         <servlet-class>Controlador.sr_cIndex</servlet-class>
     </servlet>
@@ -24,6 +28,7 @@
         <servlet-name>sr_cVenta</servlet-name>
         <servlet-class>Controlador.sr_cVenta</servlet-class>
     </servlet>
+    
     <servlet-mapping>
         <servlet-name>Controlador</servlet-name>
         <url-pattern>/Controlador</url-pattern>
@@ -43,6 +48,10 @@
     <servlet-mapping>
         <servlet-name>sr_cVenta</servlet-name>
         <url-pattern>/sr_cVenta</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>sr_cCliente</servlet-name>
+        <url-pattern>/sr_cCliente</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ControladorMenus</servlet-name>

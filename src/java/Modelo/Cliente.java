@@ -49,11 +49,13 @@ public class Cliente extends Persona {
         this.correo_elec = correo_elec;
     }
     
+    // Método para agregar un cliente
     @Override
     public int agregar() {
         int retorno = 0;
         try {
             PreparedStatement parametro;
+            cn = new Conexion();
             cn.abrir_conexion();
             String query = "INSERT INTO clientes(nombres, apellidos, nit, genero, telefono, correo_electronico, fecha_ingreso) VALUES(?, ?, ?, ?, ?, ?, ?);";
             parametro = cn.conexionDB.prepareStatement(query);
@@ -76,8 +78,9 @@ public class Cliente extends Persona {
     public DefaultTableModel leer() {
         DefaultTableModel tabla = new DefaultTableModel();
         try {
+            cn = new Conexion();
             cn.abrir_conexion();
-            String query = "SELECT * FROM clientes;";
+            String query = "SELECT `id_cliente`,`nombres`,`apellidos`,`nit`,`genero`,`telefono`,`correo_electronico`,`fecha_ingreso` FROM `clientes`;";
             ResultSet consulta = cn.conexionDB.createStatement().executeQuery(query);
             String encabezado[] = {"id", "nombres", "apellidos", "nit", "genero", "telefono", "correo_electronico", "fecha_ingreso"};
             tabla.setColumnIdentifiers(encabezado);
@@ -101,10 +104,12 @@ public class Cliente extends Persona {
     }
 
     // Método para actualizar cliente
+    @Override
     public int actualizar() {
         int retorno = 0;
         try {
             PreparedStatement parametro;
+            cn = new Conexion();
             cn.abrir_conexion();
             String query = "UPDATE clientes SET nombres = ?, apellidos = ?, nit = ?, genero = ?, telefono = ?, correo_electronico = ?, fecha_ingreso = ? WHERE id_cliente = ?;";
             parametro = cn.conexionDB.prepareStatement(query);
@@ -125,10 +130,12 @@ public class Cliente extends Persona {
     }
 
     // Método para eliminar cliente
+    @Override
     public int eliminar() {
         int retorno = 0;
         try {
             PreparedStatement parametro;
+            cn = new Conexion();
             cn.abrir_conexion();
             String query = "DELETE FROM clientes WHERE id_cliente = ?;";
             parametro = cn.conexionDB.prepareStatement(query);
@@ -187,5 +194,9 @@ public class Cliente extends Persona {
             System.out.println(ex.getMessage());
         }
         return drop; 
+        
+        
+        
+        
     }
 }

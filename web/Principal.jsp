@@ -7,6 +7,22 @@
 <%@page import="java.util.*"%>
 <%@page import="Modelo.Menu"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="Modelo.Empleado"%>
+<%@page import="javax.servlet.http.HttpSession" %>
+<%
+    
+    if (session == null || session.getAttribute("empleado") == null) {
+        response.sendRedirect("index.jsp");
+        return;
+    }
+
+    Empleado empleado = (Empleado) session.getAttribute("empleado");
+%>
+<%
+    response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
+    response.setDateHeader("Expires", 0);
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -116,7 +132,7 @@
                     <ul class="dropdown-menu" style="background-color: #5f6c7b;">
                         <li><a class="dropdown-item" href="#" style="color: white;">${empleado.nombres}</a></li>
                         <li>
-                            <a class="dropdown-item" href="index.jsp" style="color: white;">Salir</a>
+                            <a class="dropdown-item" href="Logout" style="color: white;">Salir</a>
                         </li>
                     </ul>
                 </div>

@@ -264,7 +264,7 @@ public class sr_controlador extends HttpServlet {
         case "Nueva_venta":
             request.getRequestDispatcher("Registro_venta.jsp").forward(request, response);
             break;
-
+            
         default:
             response.getWriter().println("<h1>Menú no válido</h1>");
             response.getWriter().println("<a href='Principal.jsp'>Regresar</a>");

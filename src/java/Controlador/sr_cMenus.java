@@ -43,7 +43,7 @@ public class sr_cMenus extends HttpServlet {
                     request.getRequestDispatcher("Marcas.jsp").forward(request, response);
                     break;
                 case "Venta Nueva":
-                    request.getRequestDispatcher("Registro_ventas.jsp").forward(request, response);
+                    request.getRequestDispatcher("Registro_venta.jsp").forward(request, response);
                     break;
                 case "Clientes":
                     request.getRequestDispatcher("Cliente.jsp").forward(request, response);

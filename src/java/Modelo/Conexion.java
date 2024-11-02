@@ -13,10 +13,10 @@ import java.sql.SQLException;
  */
 public class Conexion {
     private final String puerto = "3306";
-    private final String db = "db_sistemaempresa";
+    private final String db = "db_sistemaempresafinal";
     private final String urlConexion = String.format( "jdbc:mysql://localhost:%s/%s?serverTimezone=UTC",puerto, db);
     private final String usuario = "root";
-    private final String contra = "1234";
+    private final String contra = "123456";
     private final String jdbc = "com.mysql.cj.jdbc.Driver";
     
     public Connection conexionDB;

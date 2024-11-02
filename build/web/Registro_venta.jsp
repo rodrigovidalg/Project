@@ -126,7 +126,7 @@
                             </div>
                             <div class='col-md-4'>
                                 <label for='precio_unitario'><b>Precio Unitario:</b></label>
-                                <input type='number' step='.01' name='txt_precio_unitario' class='form-control' id="txt_precio_unitario" required onchange="calcularPrecioTotal()" />
+                                <input type='number' step='.01' name='txt_precio_unitario' class='form-control' id="txt_precio_unitario" required onchange="calcularPrecioTotal()" readonly />
                             </div>
                         </div>
                         <div class='col-md-4'>
@@ -254,6 +254,8 @@
         var no_serie = $(this).find('td:nth-child(3)').text();
         var fecha_factura = $(this).find('td:nth-child(4)').text();
         var fecha_ingreso = $(this).find('td:nth-child(7)').text();
+        var id_producto = $(this).find('td:nth-child(8)').text(); // ID Producto
+
         var producto = $(this).find('td:nth-child(9)').text();
         var cantidad = $(this).find('td:nth-child(10)').text();
         var precio_unitario = $(this).find('td:nth-child(11)').text();
@@ -266,6 +268,7 @@
         $("#txt_fecha_ingreso").val(fecha_ingreso);
         $("#txt_cantidad").val(cantidad);
         $("#txt_precio_unitario").val(precio_unitario);
+        $("#txt_id_producto").val(id_producto); // Producto
         
         // Mostrar el modal
         $("#modal_nueva_venta").modal('show');

@@ -284,4 +284,23 @@ public class Producto {
     }
         return drop; 
     }
+    public boolean actualizarExistencia(int id_producto, int cantidad) {
+        boolean resultado = false;
+        String sql = "UPDATE productos SET existencia = existencia - ? WHERE id_producto = ?";
+        try {
+            cn = new Conexion();
+            cn.abrir_conexion(); // Abrimos la conexión
+            PreparedStatement pst = cn.conexionDB.prepareStatement(sql);
+            pst.setInt(1, cantidad);
+            pst.setInt(2, id_producto);
+            resultado = pst.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            System.out.println("Error al actualizar la existencia: " + ex.getMessage());
+        } finally {
+            if (cn != null) {
+                cn.cerrar_conexion();
+            }
+        }
+        return resultado;
+    }
 }

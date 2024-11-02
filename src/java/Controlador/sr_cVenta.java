@@ -4,6 +4,7 @@
  */
 package Controlador;
 
+import Modelo.Producto;
 import java.sql.Date;
 import Modelo.Ventas;
 import java.io.IOException;
@@ -151,7 +152,11 @@ public class sr_cVenta extends HttpServlet {
 
             // Crear objeto de Ventas y llamar a agregar
             int id_venta = ventas.agregar(no_factura, no_serie, fecha_factura, id_cliente, id_empleado, fecha_ingreso, id_producto, cantidad, precio_unitario);
+            id_producto = Integer.parseInt(request.getParameter("txt_id_producto")); // Obtener el id_producto
 
+            Producto producto = new Producto();
+            boolean stockActualizado = producto.actualizarExistencia(id_producto, cantidad);
+            
             // Preparar la respuesta
             if (id_venta > 0) {
             // En lugar de redirigir, añade un mensaje al request

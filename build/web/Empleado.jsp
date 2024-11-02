@@ -18,146 +18,147 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     </head>
     <body>
-        <div class="container">
-            <div class="form-group">
-                <div class="card">
-                    <div class="card-header text-white" style="background-color: #90b4ce">
-                        <h2>Panel de Control del Personal</h2>
-                    </div>
-                    <div class="card-body">
-                        <!-- Contenedor para la imagen y el botón -->
-                        <div class="d-flex align-items-center mb-3">
-                            <i class="bi bi-person-fill" style="font-size: 150px; margin-right: 15px;"></i>
-                            <!-- Botón de Empleado Nuevo -->
-                            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal_empleado" onclick="limpiarEmpleado();">
-                                Empleado Nuevo
-                            </button>
-                            <div class="ms-auto"> 
-                                <label for="searchField" class="me-3">Buscar Empleado:</label> 
-                                <div class="input-group">
-                                    <input type="text" id="searchField" class="form-control" style="width: 300px;" placeholder="Ingresa el empleado a buscar..."> <!-- Aumentar el ancho -->
-                                    <button type="button" class="btn btn-primary ms-2" onclick="buscar()">Buscar</button> <!-- Añadir margen izquierdo -->
-                                </div>
-                            </div>
+        <div class="container mt-4" style="max-width: 1200px;">
+            <!-- Panel de Control -->
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="bi bi-people-fill me-2"></i> Panel de Control del Personal</h3>
+                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modal_empleado" onclick="limpiarEmpleado();">
+                        <i class="bi bi-person-plus-fill"></i> Empleado Nuevo
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- Buscador de empleados y botón de acceso a Puestos -->
+                    <div class="d-flex align-items-center mb-4">
+                        <a href="Puesto.jsp" class="btn btn-secondary me-3"><i class="bi bi-briefcase-fill"></i> Puestos</a>
+                        <a href="Registro_venta.jsp" class="btn btn-secondary me-3"><i class="bi bi-briefcase-fill"></i> Venta Nueva</a>
+                        <div class="input-group ms-auto" style="width: 300px;">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" id="searchField" class="form-control" placeholder="Buscar empleado..." aria-label="Buscar empleado">
+                            <button class="btn btn-primary" onclick="buscar()"><i class="bi bi-search"></i></button>
                         </div>
                     </div>
-                </div>
-            </div>
-
-        <!-- Empleado Nuevo Modal -->
-        <div class="modal fade" id="modal_empleado" tabindex="-1" role="dialog" aria-labelledby="modal_empleadoLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <!-- Formulario de Empleado -->
-                        <form action="Controlador?menu=Empleado" method="post" class="form-group">
-                            <div class="card text-center">
-                                <h3>Control de Empleados</h3>
-                            </div>
-                            <label for="lbl_id">ID</label>
-                            <input type="text" name="txt_id" id="txt_id" class="form-control" value="0" readonly>
-
-                            <label for="lbl_nombres">Nombres</label>
-                            <input type="text" name="txt_nombres" id="txt_nombres" class="form-control" placeholder="Primer nombre Segundo nombre" required>
-
-                            <label for="lbl_apellidos">Apellidos</label>
-                            <input type="text" name="txt_apellidos" id="txt_apellidos" class="form-control" placeholder="Primer apellido Segundo apellido" required>
-
-                            <label for="lbl_direccion">Dirección</label>
-                            <input type="text" name="txt_direccion" id="txt_direccion" class="form-control" placeholder="Guatemala" required>
-
-                            <label for="lbl_telefono">Teléfono</label>
-                            <input type="number" name="txt_telefono" id="txt_telefono" class="form-control" placeholder="12345678" required>
-
-                            <label for="lbl_dpi">DPI</label>
-                            <input type="number" name="txt_dpi" id="txt_dpi" class="form-control" placeholder="3027405800101" required>
-
-                            <label for="lbl_genero">Género</label>
-                            <select name="txt_genero" id="txt_genero" class="form-control" required>
-                                <option value="">Seleccione género</option>
-                                <option value="M">Masculino</option>
-                                <option value="F">Femenino</option>
-                            </select>
-
-                            <label for="lbl_fn">Nacimiento</label>
-                            <input type="date" name="txt_fn" id="txt_fn" class="form-control" required>
-
-                            <label for="lbl_puesto">Puesto</label>
-                            <select name="drop_puesto" id="drop_puesto" class="form-control" required>
+                    
+                    <!-- Tabla de Empleados -->
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover custom-table">
+                            <thead class="table-primary">
+                                <tr class="text-center">
+                                    <th>ID</th><th>Nombres</th><th>Apellidos</th><th>Dirección</th><th>Teléfono</th>
+                                    <th>DPI</th><th>Género</th><th>Nacimiento</th><th>Puesto</th>
+                                    <th>Inicio Laboral</th><th>Fecha Ingreso</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl_empleados" style="font-size: 13px;">
                                 <%
-                                    Puesto puesto = new Puesto();
-                                    HashMap<String, String> drop = puesto.drop_puesto();
-                                    for (String i : drop.keySet()) {
-                                        out.write("<option value='" + i + "'>" + drop.get(i) + "</option>");
+                                    Empleado empleado = new Empleado();
+                                    DefaultTableModel tabla = new DefaultTableModel();
+                                    tabla = empleado.leer();
+                                    for (int t = 0; t < tabla.getRowCount(); t++) {
+                                        out.println("<tr>");
+                                        out.println("<td>" + tabla.getValueAt(t, 0) + "</td>");
+                                        out.println("<td>" + tabla.getValueAt(t, 1) + "</td>");
+                                        out.println("<td>" + tabla.getValueAt(t, 2) + "</td>");
+                                        out.println("<td>" + tabla.getValueAt(t, 3) + "</td>");
+                                        out.println("<td>" + tabla.getValueAt(t, 4) + "</td>");
+                                        out.println("<td>" + tabla.getValueAt(t, 5) + "</td>");
+                                        out.println("<td>" + tabla.getValueAt(t, 6) + "</td>");
+                                        out.println("<td>" + tabla.getValueAt(t, 7) + "</td>");
+                                        out.println("<td>" + tabla.getValueAt(t, 8) + "</td>");
+                                        out.println("<td>" + tabla.getValueAt(t, 9) + "</td>");
+                                        out.println("<td>" + tabla.getValueAt(t, 10) + "</td>");
+                                        out.println("</tr>");
                                     }
                                 %>
-                            </select>
-
-                            <br/>
-
-                            <label for="lbl_fl">Inicio Laboral</label>
-                            <input type="date" name="txt_fl" id="txt_fl" class="form-control" required>
-
-                            <label for="lbl_fi">Fecha Ingreso</label>
-                            <input type="datetime-local" name="txt_fi" id="txt_fi" class="form-control" required>
-
-                            <br/>
-
-                            <!-- Botones de acción -->
-                            <button  name="action" id="btn_agregarE" value="agregarE" class="btn btn-primary btn-lg">Agregar</button>
-                            <button  name="action" id="btn_actualizarE" value="actualizarE" class="btn btn-success btn-lg">Actualizar</button>
-                            <button  name="action" id="btn_eliminarE" value="eliminarE" class="btn btn-danger btn-lg" onclick="javascript:if(!confirm('Desea eliminar'))return false">Eliminar</button>
-                            <button type="button" class="btn btn-warning btn-lg" data-bs-dismiss="modal">Cerrar</button>
-                        </form>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        </div>
 
-            <table class="table table-striped table-hover custom-table">
-                <thead>
-                    <tr>
-                        <div class="card-header text-center">
-                            <h2>Datos personales y laborales de los Empleados</h2>
+            <!-- Modal de Empleado -->
+            <div class="modal fade" id="modal_empleado" tabindex="-1" aria-labelledby="modal_empleadoLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="modal_empleadoLabel"><i class="bi bi-person-badge-fill"></i> Gestión de Empleados</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <th>ID</th>
-                        <th>Nombres</th>
-                        <th>Apellidos</th>
-                        <th>Direccion</th>
-                        <th>Telefono</th>
-                        <th>DPI</th>
-                        <th>Genero</th>
-                        <th>Nacimiento</th>
-                        <th>Puesto</th>
-                        <th>Inicio Laboral</th>
-                        <th>Fecha Ingreso</th>
-                    </tr>
-                </thead>
-                <tbody id="tbl_empleados">
-                    <%
-                        Empleado empleado = new Empleado();
-                        DefaultTableModel tabla = new DefaultTableModel();
-                        tabla = empleado.leer();
-                        for (int t = 0; t < tabla.getRowCount(); t++) {
-                            out.println("<tr>");
-                            out.println("<td>" + tabla.getValueAt(t, 0) + "</td>");
-                            out.println("<td>" + tabla.getValueAt(t, 1) + "</td>");
-                            out.println("<td>" + tabla.getValueAt(t, 2) + "</td>");
-                            out.println("<td>" + tabla.getValueAt(t, 3) + "</td>");
-                            out.println("<td>" + tabla.getValueAt(t, 4) + "</td>");
-                            out.println("<td>" + tabla.getValueAt(t, 5) + "</td>");
-                            out.println("<td>" + tabla.getValueAt(t, 6) + "</td>");
-                            out.println("<td>" + tabla.getValueAt(t, 7) + "</td>");
-                            out.println("<td>" + tabla.getValueAt(t, 8) + "</td>");
-                            out.println("<td>" + tabla.getValueAt(t, 9) + "</td>");
-                            out.println("<td>" + tabla.getValueAt(t, 10) + "</td>");
-                            out.println("</tr>");
-                        }
-                    %>
-                </tbody>
-            </table>
-            <br/>
-            <br/>
+                        <div class="modal-body">
+                            <form action="Controlador?menu=Empleado" method="post" class="form-group">
+                                <input type="hidden" name="txt_id" id="txt_id" value="0">
+                                
+                                <!-- Campos del Formulario -->
+                                <div class="mb-3">
+                                    <label for="txt_nombres" class="form-label">Nombres</label>
+                                    <input type="text" name="txt_nombres" id="txt_nombres" class="form-control" placeholder="Ej. Juan Pedro" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="txt_apellidos" class="form-label">Apellidos</label>
+                                    <input type="text" name="txt_apellidos" id="txt_apellidos" class="form-control" placeholder="Ej. González Rojas" required>
+                                </div>
+                                <!-- Dirección, Teléfono, DPI -->
+                                <div class="mb-3">
+                                    <label for="txt_direccion" class="form-label">Dirección</label>
+                                    <input type="text" name="txt_direccion" id="txt_direccion" class="form-control" placeholder="Ej. Guatemala" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="txt_telefono" class="form-label">Teléfono</label>
+                                    <input type="number" name="txt_telefono" id="txt_telefono" class="form-control" placeholder="Ej. 12345678" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="txt_dpi" class="form-label">DPI</label>
+                                    <input type="number" name="txt_dpi" id="txt_dpi" class="form-control" placeholder="Ej. 3027405800101" required>
+                                </div>
+                                
+                                <!-- Género, Nacimiento, Puesto -->
+                                <div class="mb-3">
+                                    <label for="txt_genero" class="form-label">Género</label>
+                                    <select name="txt_genero" id="txt_genero" class="form-select" required>
+                                        <option value="" selected>Seleccione género</option>
+                                        <option value="M">Masculino</option>
+                                        <option value="F">Femenino</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="txt_fn" class="form-label">Fecha de Nacimiento</label>
+                                    <input type="date" name="txt_fn" id="txt_fn" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="drop_puesto" class="form-label">Puesto</label>
+                                    <select name="drop_puesto" id="drop_puesto" class="form-select" required>
+                                        <%
+                                            Puesto puesto = new Puesto();
+                                            HashMap<String, String> drop = puesto.drop_puesto();
+                                            for (String i : drop.keySet()) {
+                                                out.write("<option value='" + i + "'>" + drop.get(i) + "</option>");
+                                            }
+                                        %>
+                                    </select>
+                                </div>
+                                     <br/>
+                                <div class="mb-3">
+                                    <label for="lbl_fl">Inicio Laboral</label>
+                                    <input type="date" name="txt_fl" id="txt_fl" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="lbl_fi">Fecha Ingreso</label>
+                                    <input type="datetime-local" name="txt_fi" id="txt_fi" class="form-control" required>
+                                </div>
+                                <br/>
+
+                                <!-- Botones de Acción -->
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                    <button type="submit" name="action" value="agregarE" class="btn btn-primary"><i class="bi bi-save-fill"></i> Guardar</button>
+                                    <button type="submit" name="action" value="actualizarE" class="btn btn-success"><i class="bi bi-arrow-repeat"></i> Actualizar</button>
+                                    <button type="submit" name="action" value="eliminarE" class="btn btn-danger" onclick="return confirm('¿Desea eliminar este empleado?');"><i class="bi bi-trash-fill"></i> Eliminar</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i> Cerrar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

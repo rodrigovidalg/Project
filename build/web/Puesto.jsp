@@ -18,87 +18,97 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     </head>
     <body>
-        <div class="container-fluid">
+        <div class="container mt-5">
             <div class="row">
                 <!-- Sección Izquierda: Datos del Puesto -->
-                <div class="col-md-3 p-4 bg-light">
-                    <div class="card text-center"> <!-- Clase text-center para centrar el contenido -->
+                <div class="col-md-3">
+                    <div class="card text-center shadow-sm border-0 rounded-lg">
+                        <div class="card-header bg-dark text-light">
+                            <h5><i class="bi bi-briefcase-fill"></i> Control de Puestos</h5>
+                        </div>
                         <div class="card-body">
-                            <i class="bi bi-briefcase-fill" style="font-size: 100px; margin-bottom: 25px;"></i> <!-- Ícono de puesto -->
-                            <!-- Button trigger for Puesto Nuevo Modal -->
-                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modal_puesto" onclick="limpiarPuesto();">
-                                Puesto Nuevo
+                            <i class="bi bi-person-workspace" style="font-size: 80px; color: #6c757d; margin-bottom: 20px;"></i>
+                            <button type="button" class="btn btn-dark mb-3" data-bs-toggle="modal" data-bs-target="#modal_puesto" onclick="limpiarPuesto();">
+                                <i class="bi bi-plus-circle"></i> Puesto Nuevo
                             </button>
+                            <a href="Empleado.jsp" class="btn btn-primary btn-block mt-2"><i class="bi bi-person-lines-fill"></i> Gestionar Empleados</a>
                         </div>
                     </div>
                 </div>
 
                 <!-- Sección Derecha: Tabla y búsquedas -->
-                <div class="col-md-9 p-4">
-                    <h3>Información de Puestos</h3>
-                    
-                    <!-- Buscador de Puestos -->
-                    <div class="form-group">
-                        <label for="searchField">Buscar:</label>
-                        <input type="text" id="searchField" style="margin-bottom: 20px;" class="form-control" placeholder="Ingresa el puesto a buscar...">
-                        <button type="button" class="btn btn-primary mt-2" onclick="buscar()">Buscar</button>
-                    </div>
-
-                <div>
-                    <!-- Tabla de todos los puestos ingresados -->
-                    <h4 class="text-center">Lista de Puestos</h4>
-                    <!-- Tabla para mostrar los puestos -->
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre del Puesto</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbl_puestos">
-                            <%
-                                Puesto puesto = new Puesto();
-                                DefaultTableModel tabla = puesto.leer(); 
-                                for (int t = 0; t < tabla.getRowCount(); t++) {
-                                    out.println("<tr data-id='" + tabla.getValueAt(t, 0) + "'>");
-                                    out.println("<td>" + tabla.getValueAt(t, 0) + "</td>");
-                                    out.println("<td>" + tabla.getValueAt(t, 1) + "</td>");
-                                    out.println("</tr>");
-                                }
-                            %>
-                        </tbody>
-                    </table>
-                    <br/>
-                    <br/>
-                </div>
-            </div>
-        </div>
-
-        <!-- Puesto Nuevo Modal -->
-        <div class="modal fade" id="modal_puesto" tabindex="-1" role="dialog" aria-labelledby="modal_puesto" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <form action="Controlador?menu=Puesto" method="post" class="form-group">
-                            <div class="card-header text-center">
-                                <h3>Control de Puestos</h3>
+                <div class="col-md-9">
+                    <div class="card shadow-sm border-0 rounded-lg">
+                        <div class="card-header bg-dark text-light">
+                            <h5><i class="bi bi-list-check"></i> Información de Puestos</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Buscador de Puestos -->
+                            <div class="input-group mb-3">
+                                <input type="text" id="searchField" class="form-control" placeholder="Buscar puesto...">
+                                <button class="btn btn-outline-primary" type="button" onclick="buscar()">
+                                    <i class="bi bi-search"></i> Buscar
+                                </button>
                             </div>
-                            <label for="lbl_id_puesto">ID</label>
-                            <input type="text" name="txt_id_puesto" id="txt_id_puesto" class="form-control" value="0" readonly>
-                            <label for="lbl_nombre_puesto">Nombre del Puesto</label>
-                            <input type="text" name="txt_nombre_puesto" id="txt_nombre_puesto" class="form-control" required placeholder="Ingrese el nombre del puesto">
-                            <br/>
-                            <button type="submit" name="action" id="btn_agregarP" value="agregarP" class="btn btn-primary btn-lg">Agregar</button>
-                            <button type="submit" name="action" id="btn_actualizarP" value="actualizarP" class="btn btn-success btn-lg">Actualizar</button>
-                            <button type="submit" name="action" id="btn_eliminarP" value="eliminarP" class="btn btn-danger btn-lg" onclick="javascript:if(!confirm('Desea eliminar'))return false">Eliminar</button>
-                            <button type="button" class="btn btn-warning btn-lg" data-bs-dismiss="modal">Cerrar</button>
-                        </form>
+
+                            <!-- Tabla de todos los puestos ingresados -->
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover align-middle">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre del Puesto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbl_puestos">
+                                        <%
+                                            Puesto puesto = new Puesto();
+                                            DefaultTableModel tabla = puesto.leer(); 
+                                            for (int t = 0; t < tabla.getRowCount(); t++) {
+                                                out.println("<tr data-id='" + tabla.getValueAt(t, 0) + "'>");
+                                                out.println("<td>" + tabla.getValueAt(t, 0) + "</td>");
+                                                out.println("<td>" + tabla.getValueAt(t, 1) + "</td>");
+                                                out.println("</tr>");
+                                            }
+                                        %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Puesto -->
+            <div class="modal fade" id="modal_puesto" tabindex="-1" role="dialog" aria-labelledby="modal_puestoLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-dark text-light">
+                            <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Administrar Puesto</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="Controlador?menu=Puesto" method="post">
+                                <div class="mb-3">
+                                    <label for="txt_id_puesto" class="form-label">ID</label>
+                                    <input type="text" name="txt_id_puesto" id="txt_id_puesto" class="form-control" value="0" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="txt_nombre_puesto" class="form-label">Nombre del Puesto</label>
+                                    <input type="text" name="txt_nombre_puesto" id="txt_nombre_puesto" class="form-control" required placeholder="Ingrese el nombre del puesto">
+                                </div>
+                                <div class="d-flex justify-content-around">
+                                    <button type="submit" name="action" value="agregarP" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Agregar</button>
+                                    <button type="submit" name="action" value="actualizarP" class="btn btn-success"><i class="bi bi-pencil"></i> Actualizar</button>
+                                    <button type="submit" name="action" value="eliminarP" class="btn btn-danger" onclick="return confirm('¿Desea eliminar este puesto?')"><i class="bi bi-trash"></i> Eliminar</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Cerrar</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        
 
         <!-- Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

@@ -70,6 +70,7 @@ public class Cliente extends Persona {
             cn.cerrar_conexion();
         } catch (SQLException ex) {
             System.out.println("Error en agregar: " + ex.getMessage());
+            retorno = 0;
         }
         return retorno;
     }
@@ -125,6 +126,7 @@ public class Cliente extends Persona {
             cn.cerrar_conexion();
         } catch (SQLException ex) {
             System.out.println("Error en actualizar: " + ex.getMessage());
+            retorno = 0;
         }
         return retorno;
     }
@@ -144,6 +146,7 @@ public class Cliente extends Persona {
             cn.cerrar_conexion();
         } catch (SQLException ex) {
             System.out.println("Error en eliminar: " + ex.getMessage());
+            retorno = 0;
         }
         return retorno;
     }
@@ -180,7 +183,7 @@ public class Cliente extends Persona {
         HashMap<String,String[]> drop = new HashMap ();
         try{
         cn = new Conexion ();
-        String query= "SELECT id_cliente as id,nombres,apellidos FROM cliente;";
+        String query= "SELECT id_cliente as id,nombres,apellidos FROM clientes;";
         cn.abrir_conexion();
         ResultSet consulta = cn.conexionDB.createStatement().executeQuery(query);
         while (consulta.next()){
@@ -193,10 +196,6 @@ public class Cliente extends Persona {
         }catch (SQLException ex){
             System.out.println(ex.getMessage());
         }
-        return drop; 
-        
-        
-        
-        
+        return drop;    
     }
 }

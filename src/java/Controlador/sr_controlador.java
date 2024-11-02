@@ -245,30 +245,6 @@ public class sr_controlador extends HttpServlet {
                     break;
             }
             break;
-
-
-
-
-        case "Cliente":
-            request.getRequestDispatcher("Cliente.jsp").forward(request, response);
-            break;
-
-        case "Producto":
-            request.getRequestDispatcher("Producto.jsp").forward(request, response);
-            break;
-
-        case "Nueva_compra":
-            request.getRequestDispatcher("Registro_compra.jsp").forward(request, response);
-            break;
-
-        case "Nueva_venta":
-            request.getRequestDispatcher("Registro_venta.jsp").forward(request, response);
-            break;
-            
-        default:
-            response.getWriter().println("<h1>Menú no válido</h1>");
-            response.getWriter().println("<a href='Principal.jsp'>Regresar</a>");
-            break;
     }
 }
 

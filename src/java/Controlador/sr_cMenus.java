@@ -61,7 +61,7 @@ public class sr_cMenus extends HttpServlet {
                     request.getRequestDispatcher("Registro_compras.jsp").forward(request, response);
                     break;
                 case "Reportes":
-                    request.getRequestDispatcher("Puesto.jsp").forward(request, response);
+                    request.getRequestDispatcher("").forward(request, response);
                     break;
                 default:
                     // Establece el mensaje de error cuando la opción no es válida

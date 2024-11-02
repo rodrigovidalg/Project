@@ -9,127 +9,152 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Proveedores</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Gestión de Proveedores</h1>
 
-    </head>
-    <body>
-        <h1>Proveedores</h1>
-        <a href="Registro_compras.jsp">Compras</a>
-        <div class="d-flex justify-content-around">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_proveedor">
-          Proveedor Nuevo
-        </button>
-
-        <!-- Modal -->
-        <div class="modal fade" id="modal_proveedor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <form action="sr_cCompras?menu=Proveedores" method="post" class="form-group">
-                <label for="lbl_id" ><b>ID</b></label>
-                <input type="text" name="txt_id" id="txt_id" class="form-control" value="0" readonly> 
-                
-                <label for="lbl_proveedor" ><b>Proveedor: </b></label>
-                <input type="text" name="txt_proveedor" id="txt_proveedor" class="form-control" placeholder="Primer Nombre, Segundo Nombre" required>
-                
-                <label for="lbl_nit" ><b>Nit:</b></label>
-                <input type="text" name="txt_nit" id="txt_nit" class="form-control" placeholder="Primer Apellido, Segundo Apellido" required>
-                
-                <label for="lbl_direccion" ><b>Direccion:</b></label>
-                <input type="text"  name="txt_direccion" id="txt_direccion" class="form-control" placeholder="#Numero de casa, calle, ciudad" required>
-                
-                <label for="lbl_telefono" ><b>Telefono:</b></label>
-                <input type="number" name="txt_telefono" id="txt_telefono" class="form-control" placeholder="5555555" required>
-
-                <br>
-                <div class="btn-group" role="group" aria-label="Basic outlined example">
-                    <button name="action" id="btn_agregar" value="agregar" class="btn btn-outline-success"><i class="bi bi-database-fill-add"></i> Agregar</button>
-                    <button name="action" id="btn_modificar"  value="actualizar" class="btn btn-outline-warning"><i class="bi bi-database-fill-gear"></i> Modificar</button>
-                    <button name="action" id="btn_eliminar"  value="eliminar"  class="btn btn-outline-danger" onclick="javascript:if(!confirm('¿Desea Eliminar?'))return false" ><i class="bi bi-database-fill-dash"></i> Eliminar</button>
-                </div>
-                
-            </form>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-              </div>
+        <!-- Sección de Opciones -->
+        <div class="card mb-4">
+            <div class="card-header d-flex align-items-center">
+                <i class="bi bi-briefcase me-2"></i>
+                <span><strong>Proveedores</strong></span>
             </div>
-          </div>
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <a href="Registro_compras.jsp" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left-circle"></i> Regresar a Compras
+                </a>
+                <div class="d-flex align-items-center">
+                    <label for="searchField" class="me-2">Buscar:</label>
+                    <input type="text" id="searchField" class="form-control me-6" placeholder="Ingresa el proveedor">
+                    <button type="button" class="btn btn-primary" onclick="buscar()">Buscar</button>
+                </div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_proveedor">
+                    <i class="bi bi-person-plus-fill"></i> Proveedor Nuevo
+                </button>
+            </div>
         </div>
-        
-        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-    <table class="table table-striped table-hover">
-        <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
-            <tr>
-                <th>ID</th>
-                <th>Proveedor</th>
-                <th>Nit</th>
-                <th>Direccion</th>
-                <th>Telefono</th>
-            </tr>
-        </thead>
-        <tbody id="tbl_proveedor">
-            <%
-                Proveedores proveedores = new Proveedores();
-                DefaultTableModel tabla = new DefaultTableModel();
-                tabla = proveedores.leer();
-                for (int t = 0; t < tabla.getRowCount(); t++) {
-                    out.println("<tr data-id='" + tabla.getValueAt(t, 0) + "'>");
-                    out.println("<td>" + tabla.getValueAt(t, 0) + "</td>");
-                    out.println("<td>" + tabla.getValueAt(t, 1) + "</td>");
-                    out.println("<td>" + tabla.getValueAt(t, 2) + "</td>");
-                    out.println("<td>" + tabla.getValueAt(t, 3) + "</td>");
-                    out.println("<td>" + tabla.getValueAt(t, 4) + "</td>");
-                    out.println("</tr>");
+
+        <!-- Modal de Registro/Actualización de Proveedor -->
+        <div class="modal fade" id="modal_proveedor" tabindex="-1" aria-labelledby="modalProveedorLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="modalProveedorLabel">Registrar Proveedor</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="sr_cCompras?menu=Proveedores" method="post" class="form-group">
+                            <input type="hidden" name="txt_id" id="txt_id" value="0">
+                            <div class="mb-3">
+                                <label for="txt_proveedor"><b>Proveedor:</b></label>
+                                <input type="text" name="txt_proveedor" id="txt_proveedor" class="form-control" placeholder="Nombre del proveedor" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="txt_nit"><b>NIT:</b></label>
+                                <input type="text" name="txt_nit" id="txt_nit" class="form-control" placeholder="Número de NIT" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="txt_direccion"><b>Dirección:</b></label>
+                                <input type="text" name="txt_direccion" id="txt_direccion" class="form-control" placeholder="Dirección del proveedor" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="txt_telefono"><b>Teléfono:</b></label>
+                                <input type="tel" name="txt_telefono" id="txt_telefono" class="form-control" placeholder="Número de teléfono" required>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button name="action" value="agregar" class="btn btn-success me-2"><i class="bi bi-save2-fill"></i> Guardar</button>
+                                <button name="action" value="actualizar" class="btn btn-warning me-2"><i class="bi bi-pencil-square"></i> Actualizar</button>
+                                <button name="action" value="eliminar" class="btn btn-danger" onclick="return confirm('¿Desea eliminar este proveedor?')"><i class="bi bi-trash-fill"></i> Eliminar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Proveedores -->
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <i class="bi bi-table me-2"></i>
+                <span><strong>Listado de Proveedores</strong></span>
+            </div>
+            <div class="card-body table-responsive" style="max-height: 300px; overflow-y: auto;">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-primary sticky-top">
+                        <tr>
+                            <th>ID</th>
+                            <th>Proveedor</th>
+                            <th>NIT</th>
+                            <th>Dirección</th>
+                            <th>Teléfono</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl_proveedor">
+                        <%
+                            Proveedores proveedores = new Proveedores();
+                            DefaultTableModel tabla = proveedores.leer();
+                            for (int i = 0; i < tabla.getRowCount(); i++) {
+                                out.println("<tr data-id='" + tabla.getValueAt(i, 0) + "'>");
+                                out.println("<td>" + tabla.getValueAt(i, 0) + "</td>");
+                                out.println("<td>" + tabla.getValueAt(i, 1) + "</td>");
+                                out.println("<td>" + tabla.getValueAt(i, 2) + "</td>");
+                                out.println("<td>" + tabla.getValueAt(i, 3) + "</td>");
+                                out.println("<td>" + tabla.getValueAt(i, 4) + "</td>");
+                                out.println("</tr>");
+                            }
+                        %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script>
+        function limpiar() {
+            $("#txt_id").val(0);
+            $("#txt_proveedor").val('');
+            $("#txt_nit").val('');
+            $("#txt_direccion").val('');
+            $("#txt_telefono").val('');
+        }
+
+        $('#tbl_proveedor').on('click', 'tr', function () {
+            var $row = $(this);
+            $("#txt_id").val($row.data('id'));
+            $("#txt_proveedor").val($row.children('td').eq(1).text());
+            $("#txt_nit").val($row.children('td').eq(2).text());
+            $("#txt_direccion").val($row.children('td').eq(3).text());
+            $("#txt_telefono").val($row.children('td').eq(4).text());
+            $('#modal_proveedor').modal('show');
+        });
+    </script>
+    <script>
+            function buscar() {
+                const searchTerm = document.getElementById('searchField').value.toLowerCase();
+                let found = false;
+
+                // Filtrar puestos
+                $('#tbl_proveedor tr').filter(function() {
+                    const isMatch = $(this).text().toLowerCase().indexOf(searchTerm) > -1;
+                    $(this).toggle(isMatch);
+                    if (isMatch) found = true; // Actualiza found si hay coincidencias
+                });
+
+                // Mostrar alerta si no se encontraron resultados
+                if (!found) {
+                    alert("No se encontraron resultados.");
                 }
-            %>
-        </tbody>
-    </table>
-        
-        
-</div>
-
-       
-      </div>
-        
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-
-        <script>
-            function limpiar(){
-                $("#txt_id").val(0);
-                $("#txt_proveedor").val('');
-                $("#txt_nit").val('');
-                $("#txt_direccion").val('');
-                $("#txt_telefono").val('');
-                
             }
-            $('#tbl_proveedor').on('click', 'tr td', function (event) {
-                var target, id, proveedor, nit, direccion, telefono;
-                target = $(event.target);
-                id = target.parent().data('id');
-                proveedor = target.parent("tr").find("td").eq(1).html();
-                nit = target.parent("tr").find("td").eq(2).html();
-                direccion = target.parent("tr").find("td").eq(3).html();
-                telefono = target.parent("tr").find("td").eq(4).html();
-
-                $("#txt_id").val(id);
-                $("#txt_proveedor").val(proveedor);
-                $("#txt_nit").val(nit);
-                $("#txt_direccion").val(direccion);
-                $("#txt_telefono").val(telefono);
-                $("#modal_proveedor").modal('show');
-            });
         </script>
-    </body>
+</body>
 </html>
+

@@ -48,7 +48,7 @@
                 <h2 class="mb-0"><i class="bi bi-plus-circle"></i> Ingresar Producto</h2>
             </div>
             <div class="card-body">
-                <form action="sr_cInventario" method="post" enctype="multipart/form-data" onsubmit="saveScrollPosition()">
+                <form action="sr_cInventario" method="post" enctype="multipart/form-data" >
                     <div class="row mb-3">
                         <div class="col-md-1">
                             <label for="id" class="form-label">ID</label>
@@ -98,7 +98,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="imagen" class="form-label">Imagen del Producto</label>
-                            <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*" required>
+                            <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*">
                             <img id="previewImagen" src="" alt="Previsualización de la Imagen" class="img-thumbnail mt-2" style="display: none;">
                         </div>
                     </div>
@@ -208,24 +208,23 @@
                 // Asignar los datos a los campos del formulario de productos
                 $('#idProducto').val(id);
                 $('#producto').val(producto);
-                $('#drop_marca').val(marca);
                 $('#descripcion').val(descripcion);
                 $('#precioCosto').val(precioCosto);
                 $('#precioVenta').val(precioVenta);
                 $('#existencia').val(existencia);
                 $('#fechaIngreso').val(fechaIngreso);
 
-                // Mostrar la imagen en el campo del formulario (puedes agregar un <img> si deseas previsualizarla)
-                $('#previewImagen').attr('src', imagenURL).show();
-                $('#imagen').val(imagenURL); // Asignar la URL de la imagen
+                // Mostrar la imagen en la previsualización si hay una URL
+                if (imagenURL) {
+                    $('#previewImagen').attr('src', imagenURL).show();
+                } else {
+                    $('#previewImagen').hide();
+                }
 
-                // Seleccionar la marca correspondiente en el dropdown de marcas
-                $('#drop_marca option').each(function() {
-                    if ($(this).text() === marca) {
-                        $('#drop_marca').val($(this).val());
-                        return false;
-                    }
-                });
+                // Seleccionar la marca usando el texto de la opción si la marca es el nombre visible
+                $("#drop_marca option").filter(function() {
+                    return $(this).text() === marca;  // Filtrar opciones basándose en el texto visible
+                }).prop("selected", true);
             });
 
             // Guardar la posición del scroll

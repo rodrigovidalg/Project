@@ -36,7 +36,7 @@
                     <div class="card shadow">
                         <img src="https://i.pinimg.com/originals/c6/96/f8/c696f868fb6ccfcc908b72f07f58089a.jpg" class="card-img-top" alt="Imagen del cliente">
                         <div class="card-body text-center">
-                            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modal_clientes">
+                            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modal_clientes" onclick="limpiar();">
                                 <i class="bi bi-person-plus-fill"></i> Nuevo Cliente
                             </button>
                             <br>
@@ -161,7 +161,7 @@
                 $("#txt_nombres").val('');
                 $("#txt_apellidos").val('');
                 $("#txt_nit").val('');
-                $("input[name='txt_genero']").prop('checked', false);
+                $("#txt_genero").val('');
                 $("#txt_telefono").val('');
                 $("#txt_correo").val('');
                 $("#txt_fi").val('');

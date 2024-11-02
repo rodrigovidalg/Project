@@ -191,35 +191,54 @@ public class Producto {
     }
 
     public int actualizar(File imagenArchivo) {
-        int resultado = 0;
-        String urlImagen = guardarImagenEnServidor(imagenArchivo);
-        if (urlImagen != null) {
-            this.imagen = urlImagen; // URL de la imagen
-            String query = "UPDATE productos SET producto = ?, id_marca = ?, descripcion = ?, imagen = ?, precio_costo = ?, precio_venta = ?, existencia = ?, fecha_ingreso = ? WHERE id_producto = ?;";
-
-            try {
-                cn = new Conexion(); // Inicializamos la conexión
-                cn.abrir_conexion();
-                try (PreparedStatement parametro = cn.conexionDB.prepareStatement(query)) {
-                    parametro.setString(1, producto);
-                    parametro.setInt(2, id_marca);
-                    parametro.setString(3, descripcion);
-                    parametro.setString(4, imagen); // Almacena la URL en la base de datos
-                    parametro.setDouble(5, precio_costo);
-                    parametro.setDouble(6, precio_venta);
-                    parametro.setInt(7, existencia);
-                    parametro.setString(8, fecha_ingreso);
-                    parametro.setInt(9, id);
-                    resultado = parametro.executeUpdate();
-                }
-            } catch (SQLException ex) {
-                System.err.println("Error al actualizar producto: " + ex.getMessage());
-            } finally {
-                if (cn != null) {
-                    cn.cerrar_conexion(); // Cerramos la conexión solo si fue inicializada.
-                }
+    int resultado = 0;
+        // Si se proporciona una nueva imagen, intenta guardarla y actualiza la URL
+        if (imagenArchivo != null) {
+            String urlImagen = guardarImagenEnServidor(imagenArchivo);
+            if (urlImagen != null) {
+                this.imagen = urlImagen; // Asignar la nueva URL de la imagen
+            } else {
+                System.err.println("Error al guardar la nueva imagen en el servidor.");
+                return resultado; // Retorna 0 si no se pudo guardar la imagen
             }
         }
+
+        // Consulta de actualización en la base de datos
+        String query = "UPDATE productos SET producto = ?, id_marca = ?, descripcion = ?, "
+                     + (imagenArchivo != null ? "imagen = ?, " : "") // Solo incluir 'imagen = ?' si hay una nueva imagen
+                     + "precio_costo = ?, precio_venta = ?, existencia = ?, fecha_ingreso = ? WHERE id_producto = ?;";
+
+        try {
+            cn = new Conexion(); // Inicializamos la conexión
+            cn.abrir_conexion();
+
+            try (PreparedStatement parametro = cn.conexionDB.prepareStatement(query)) {
+                int index = 1;
+                parametro.setString(index++, producto);
+                parametro.setInt(index++, id_marca);
+                parametro.setString(index++, descripcion);
+
+                // Solo establece el parámetro de imagen si hay una nueva imagen
+                if (imagenArchivo != null) {
+                    parametro.setString(index++, this.imagen);
+                }
+
+                parametro.setDouble(index++, precio_costo);
+                parametro.setDouble(index++, precio_venta);
+                parametro.setInt(index++, existencia);
+                parametro.setString(index++, fecha_ingreso);
+                parametro.setInt(index, id);
+
+                resultado = parametro.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error al actualizar producto: " + ex.getMessage());
+        } finally {
+            if (cn != null) {
+                cn.cerrar_conexion(); // Cerramos la conexión solo si fue inicializada
+            }
+        }
+
         return resultado;
     }
 

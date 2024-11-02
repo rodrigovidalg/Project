@@ -82,7 +82,7 @@ public class sr_cInventario extends HttpServlet {
 
         int id;
         try {
-            id = Integer.parseInt(idStr); // Intenta convertir a entero
+            id = Integer.parseInt(idStr);
         } catch (NumberFormatException e) {
             System.out.println("Error al convertir ID de producto a número: " + e.getMessage());
             return; // O redirige a una página de error
@@ -90,13 +90,26 @@ public class sr_cInventario extends HttpServlet {
 
         Producto producto = crearProductoDesdeRequest(request);
         if (producto != null) {
-            producto.setId(id); // Asigna el ID del producto
-            File imagenArchivo = obtenerImagenArchivo(request); // Obtener la imagen
-            int resultado = producto.actualizar(imagenArchivo); // Llama al método actualizar de la clase Producto
-            if (resultado > 0) {
-                System.out.println("Producto actualizado exitosamente.");
+            producto.setId(id);
+            File imagenArchivo = obtenerImagenArchivo(request);
+
+            // Verifica si imagenArchivo es null antes de llamarlo
+            if (imagenArchivo != null) {
+                int resultado = producto.actualizar(imagenArchivo); 
+                if (resultado > 0) {
+                    System.out.println("Producto actualizado exitosamente.");
+                } else {
+                    System.out.println("Error al actualizar el producto.");
+                }
             } else {
-                System.out.println("Error al actualizar el producto.");
+                System.out.println("No se seleccionó ninguna imagen, no se actualizará la imagen.");
+                // Llama a actualizar sin imagen o maneja de acuerdo a tus necesidades
+                int resultado = producto.actualizar(null); // Si `actualizar` permite `null` como parámetro
+                if (resultado > 0) {
+                    System.out.println("Producto actualizado sin cambios en la imagen.");
+                } else {
+                    System.out.println("Error al actualizar el producto sin imagen.");
+                }
             }
         } else {
             System.out.println("Producto no válido.");
@@ -160,20 +173,20 @@ public class sr_cInventario extends HttpServlet {
 
 
     private File obtenerImagenArchivo(HttpServletRequest request) throws IOException, ServletException {
-        Part filePart = request.getPart("imagen"); // Obtain the file
+        Part filePart = request.getPart("imagen");
         if (filePart != null && filePart.getSize() > 0) {
-            String imagenNombre = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName(); // Unique name
+            String imagenNombre = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName();
             File uploads = new File(IMAGE_UPLOAD_PATH);
             if (!uploads.exists()) {
-                uploads.mkdirs(); // Create the directory if it does not exist
+                uploads.mkdirs();
             }
             File file = new File(uploads, imagenNombre);
             try (InputStream input = filePart.getInputStream()) {
-                Files.copy(input, file.toPath(), StandardCopyOption.REPLACE_EXISTING); // Save the image
+                Files.copy(input, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
-            return file; // Return the saved file
+            return file;
         }
-        return null; // No file uploaded
+        return null; // No se seleccionó una imagen o la imagen está vacía
     }
 
     /**

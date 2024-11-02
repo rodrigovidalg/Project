@@ -188,9 +188,9 @@
                     $("#txt_direccion").val('');
                     $("#txt_telefono").val('');
                     $("#txt_dpi").val('');
-                    $("input[name='txt_genero']").prop('checked', false); 
+                    $("#txt_genero").val(''); 
                     $("#txt_fn").val('');
-                    $("#drop_puesto").val(1);
+                    $("#drop_puesto").val('');
                     $("#txt_fl").val('');
                     $("#txt_fi").val('');
                 }

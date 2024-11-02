@@ -203,7 +203,7 @@
     $("#txt_noc").val('');    
     $("#txt_fecha_orden").val('');    
     $("#txt_fecha_ingreso").val('');    
-    $("#txt_id_proveedor").val(1);
+    $("#txt_id_proveedor").val('');
 }
 
 $('#tbl_compras').on('click', 'tr', function (event) {

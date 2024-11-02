@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Modelo;
 
 import java.sql.PreparedStatement;
@@ -10,16 +6,12 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author carlo
- */
 public class Marca {
     private int id;
     private String marca;
-    Conexion cn;
-    
-    public void Marca(){}
+    private Conexion cn;
+
+    public Marca() {}
 
     public Marca(int id, String marca) {
         this.id = id;
@@ -41,16 +33,16 @@ public class Marca {
     public void setMarca(String marca) {
         this.marca = marca;
     }
-    
-    public HashMap drop_puesto(){
+
+    public HashMap drop_marca(){
         HashMap<String, String> drop = new HashMap();
         try{
             cn = new Conexion();
-            String query = "SELECT id_puesto as id,puesto FROM puestos;";
+            String query = "SELECT id_marca as id,marca FROM marcas;";
             cn.abrir_conexion();
             ResultSet consulta = cn.conexionDB.createStatement().executeQuery(query);
             while (consulta.next()){
-                drop.put(consulta.getString("id"), consulta.getString("puesto"));
+                drop.put(consulta.getString("id"), consulta.getString("marca"));
             }
             cn.cerrar_conexion();
         }catch(SQLException ex){
@@ -114,8 +106,7 @@ public class Marca {
         }
     }
 
-    // Método para eliminar un puesto
-    public void eliminarPuesto() {
+    public void eliminar() {
         try {
             PreparedStatement parametro;
             cn = new Conexion();

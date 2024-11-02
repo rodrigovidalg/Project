@@ -1,62 +1,47 @@
 package Modelo;
-
-import java.sql.Connection;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author DELL
- */
 public class Producto {
     private int id;
-    private int id_marca;
     private String producto;
+    private int id_marca;
     private String descripcion;
+    private String imagen;
     private double precio_costo;
     private double precio_venta;
     private int existencia;
     private String fecha_ingreso;
     private Conexion cn;
+    
+    public Producto(){}
 
-    // Constructor vacío
-    public Producto() {
-        this.cn = new Conexion();
-    }
-
-    // Constructor con parámetros
-    public Producto(int id, int id_marca, String producto, String descripcion, double precio_costo, double precio_venta, int existencia, String fecha_ingreso) {
+    public Producto(int id, String producto, int id_marca, String descripcion, String imagen, double precio_costo, double precio_venta, int existencia, String fecha_ingreso) {
         this.id = id;
-        this.id_marca = id_marca;
         this.producto = producto;
+        this.id_marca = id_marca;
         this.descripcion = descripcion;
+        this.imagen = imagen;
         this.precio_costo = precio_costo;
         this.precio_venta = precio_venta;
         this.existencia = existencia;
         this.fecha_ingreso = fecha_ingreso;
-        this.cn = new Conexion();
     }
 
-    // Métodos getter y setter
-    public int getIdProducto() {
+    public int getId() {
         return id;
     }
 
-    public void setIdProducto(int id) {
+    public void setId(int id) {
         this.id = id;
-    }
-
-    public int getIdMarca() {
-        return id_marca;
-    }
-
-    public void setIdMarca(int id_marca) {
-        this.id_marca = id_marca;
     }
 
     public String getProducto() {
@@ -67,6 +52,14 @@ public class Producto {
         this.producto = producto;
     }
 
+    public int getId_marca() {
+        return id_marca;
+    }
+
+    public void setId_marca(int id_marca) {
+        this.id_marca = id_marca;
+    }
+
     public String getDescripcion() {
         return descripcion;
     }
@@ -75,19 +68,27 @@ public class Producto {
         this.descripcion = descripcion;
     }
 
-    public double getPrecioCosto() {
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
+
+    public double getPrecio_costo() {
         return precio_costo;
     }
 
-    public void setPrecioCosto(double precio_costo) {
+    public void setPrecio_costo(double precio_costo) {
         this.precio_costo = precio_costo;
     }
 
-    public double getPrecioVenta() {
+    public double getPrecio_venta() {
         return precio_venta;
     }
 
-    public void setPrecioVenta(double precio_venta) {
+    public void setPrecio_venta(double precio_venta) {
         this.precio_venta = precio_venta;
     }
 
@@ -99,118 +100,151 @@ public class Producto {
         this.existencia = existencia;
     }
 
-    public String getFechaIngreso() {
+    public String getFecha_ingreso() {
         return fecha_ingreso;
     }
 
-    public void setFechaIngreso(String fecha_ingreso) {
+    public void setFecha_ingreso(String fecha_ingreso) {
         this.fecha_ingreso = fecha_ingreso;
     }
 
-    public DefaultTableModel leer() {
-       DefaultTableModel tabla = new DefaultTableModel();
-       try {
-           cn = new Conexion();
-           cn.abrir_conexion();
-           String query = "SELECT * FROM productos;";
-           ResultSet consulta = cn.conexionDB.createStatement().executeQuery(query);
-           String encabezado[] = {"ID Producto", "Producto", "ID Marca", "Descripción", "Imagen", "Precio Costo", "Precio Venta", "Existencia", "Fecha Ingreso"};
-           tabla.setColumnIdentifiers(encabezado);
-           String datos[] = new String[9];
-           while (consulta.next()) {
-               datos[0] = consulta.getString("id_producto");
-               datos[1] = consulta.getString("producto");
-               datos[2] = consulta.getString("id_marca");
-               datos[3] = consulta.getString("descripcion");
-               datos[4] = consulta.getString("imagen");
-               datos[5] = consulta.getString("precio_costo");
-               datos[6] = consulta.getString("precio_venta");
-               datos[7] = consulta.getString("existencia");
-               datos[8] = consulta.getString("fecha_ingreso");
-               tabla.addRow(datos);
-           }
-           cn.cerrar_conexion();
-       } catch (SQLException ex) {
-           System.out.println("Error al leer productos: " + ex.getMessage());
-       }
-       return tabla; // Retorna el modelo con los datos de los productos
-   }
-    // Método para listar los productos
-    public List<Producto> listar() throws SQLException {
-        List<Producto> listaProductos = new ArrayList<>();
-        String sql = "SELECT * FROM productos";
-        
-        cn.abrir_conexion();
-        Connection conexion = cn.conexionDB;
-        try (PreparedStatement pst = conexion.prepareStatement(sql);
-             ResultSet rs = pst.executeQuery()) {
-            while (rs.next()) {
-                Producto prod = new Producto();
-                prod.setIdProducto(rs.getInt("id_producto"));
-                prod.setIdMarca(rs.getInt("id_marca"));
-                prod.setProducto(rs.getString("producto"));
-                prod.setDescripcion(rs.getString("descripcion"));
-                prod.setPrecioCosto(rs.getDouble("precio_costo"));
-                prod.setPrecioVenta(rs.getDouble("precio_venta"));
-                prod.setExistencia(rs.getInt("existencia"));
-                prod.setFechaIngreso(rs.getString("fecha_ingreso"));
-                listaProductos.add(prod);
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al listar productos: " + e.getMessage());
-            throw new SQLException("Error al listar productos: " + e.getMessage());
-        } finally {
-            cn.cerrar_conexion();
-        }
-        return listaProductos;
-    }
+    public String guardarImagenEnServidor(File imagenArchivo) {
+        String directorioDestino = "C:\\xampp\\htdocs\\imagenes_productos\\";
+        String nombreArchivo = imagenArchivo.getName();
+        Path destinoPath = Paths.get(directorioDestino + nombreArchivo);
 
-    // Método para guardar un producto en la base de datos
-    public boolean guardar() throws SQLException {
-        boolean guardado = false;
-        String sql = "INSERT INTO productos (id_marca, producto, descripcion, precio_costo, precio_venta, existencia, fecha_ingreso) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        
-        cn.abrir_conexion();
-        Connection conexion = cn.conexionDB;
         try {
-            conexion.setAutoCommit(true);
-            try (PreparedStatement pst = conexion.prepareStatement(sql)) {
-                pst.setInt(1, this.getIdMarca());
-                pst.setString(2, this.getProducto());
-                pst.setString(3, this.getDescripcion());
-                pst.setDouble(4, this.getPrecioCosto());
-                pst.setDouble(5, this.getPrecioVenta());
-                pst.setInt(6, this.getExistencia());
-                pst.setString(7, this.getFechaIngreso());
-                guardado = pst.executeUpdate() > 0;
+            if (!Files.exists(Paths.get(directorioDestino))) {
+                Files.createDirectories(Paths.get(directorioDestino));
             }
-        } catch (SQLException e) {
-            System.out.println("Error al guardar el producto: " + e.getMessage());
-            throw new SQLException("Error al guardar el producto: " + e.getMessage());
-        } finally {
-            cn.cerrar_conexion();
+            Files.copy(imagenArchivo.toPath(), destinoPath);
+            return "http://localhost/imagenes_productos/" + nombreArchivo; // URL accesible en el servidor
+        } catch (IOException e) {
+            System.out.println("Error al guardar la imagen en el servidor: " + e.getMessage());
+            return null;
         }
-        return guardado;
     }
 
-    // Método para eliminar un producto de la base de datos
-    public boolean eliminar() throws SQLException {
-        boolean eliminado = false;
-        String sql = "DELETE FROM productos WHERE id_producto = ?";
-        
-        cn.abrir_conexion();
-        Connection conexion = cn.conexionDB;
-        try (PreparedStatement pst = conexion.prepareStatement(sql)) {
-            pst.setInt(1, this.getIdProducto());
-            eliminado = pst.executeUpdate() > 0;
-        } catch (SQLException e) {
-            throw new SQLException("Error al eliminar el producto: " + e.getMessage());
+
+    public DefaultTableModel leer() {
+        DefaultTableModel tabla = new DefaultTableModel();
+        try {
+            cn = new Conexion();  // Aseguramos la inicialización de la conexión.
+            cn.abrir_conexion();
+            String query = "SELECT p.id_producto as id, p.producto, p.descripcion, p.imagen, p.precio_costo, p.precio_venta, p.existencia, p.fecha_ingreso, m.marca FROM productos as p INNER JOIN marcas as m ON p.id_marca = m.id_marca;";
+            ResultSet consulta = cn.conexionDB.createStatement().executeQuery(query);
+            String encabezado[] = {"id", "producto", "marca", "descripcion", "imagen", "precio costo", "precio venta", "existencia", "fecha ingreso"};
+            tabla.setColumnIdentifiers(encabezado);
+            String datos[] = new String[9];
+            while (consulta.next()) {
+                datos[0] = consulta.getString("id");
+                datos[1] = consulta.getString("producto");
+                datos[2] = consulta.getString("marca");
+                datos[3] = consulta.getString("descripcion");
+                datos[4] = consulta.getString("imagen");
+                datos[5] = consulta.getString("precio_costo");
+                datos[6] = consulta.getString("precio_venta");
+                datos[7] = consulta.getString("existencia");
+                datos[8] = consulta.getString("fecha_ingreso");
+                tabla.addRow(datos);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error en leer " + ex.getMessage());
         } finally {
-            cn.cerrar_conexion();
+            if (cn != null) {
+                cn.cerrar_conexion(); // Cerramos la conexión solo si fue inicializada.
+            }
         }
-        return eliminado;
+        return tabla;
     }
-    public HashMap drop_sangre(){
+
+    public int agregar(File imagenArchivo) {
+        int resultado = 0;
+        String urlImagen = guardarImagenEnServidor(imagenArchivo);
+        if (urlImagen != null) {
+            this.imagen = urlImagen; // URL de la imagen
+            String query = "INSERT INTO productos (producto, id_marca, descripcion, imagen, precio_costo, precio_venta, existencia, fecha_ingreso) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+
+            try {
+                cn = new Conexion(); // Inicializamos la conexión
+                cn.abrir_conexion();
+                try (PreparedStatement parametro = cn.conexionDB.prepareStatement(query)) {
+                    parametro.setString(1, producto);
+                    parametro.setInt(2, id_marca);
+                    parametro.setString(3, descripcion);
+                    parametro.setString(4, imagen); // Almacena la URL en la base de datos
+                    parametro.setDouble(5, precio_costo);
+                    parametro.setDouble(6, precio_venta);
+                    parametro.setInt(7, existencia);
+                    parametro.setString(8, fecha_ingreso);
+                    resultado = parametro.executeUpdate();
+                }
+            } catch (SQLException ex) {
+                System.err.println("Error al agregar producto: " + ex.getMessage());
+            } finally {
+                if (cn != null) {
+                    cn.cerrar_conexion(); // Cerramos la conexión solo si fue inicializada.
+                }
+            }
+        }
+        return resultado;
+    }
+
+    public int actualizar(File imagenArchivo) {
+        int resultado = 0;
+        String urlImagen = guardarImagenEnServidor(imagenArchivo);
+        if (urlImagen != null) {
+            this.imagen = urlImagen; // URL de la imagen
+            String query = "UPDATE productos SET producto = ?, id_marca = ?, descripcion = ?, imagen = ?, precio_costo = ?, precio_venta = ?, existencia = ?, fecha_ingreso = ? WHERE id_producto = ?;";
+
+            try {
+                cn = new Conexion(); // Inicializamos la conexión
+                cn.abrir_conexion();
+                try (PreparedStatement parametro = cn.conexionDB.prepareStatement(query)) {
+                    parametro.setString(1, producto);
+                    parametro.setInt(2, id_marca);
+                    parametro.setString(3, descripcion);
+                    parametro.setString(4, imagen); // Almacena la URL en la base de datos
+                    parametro.setDouble(5, precio_costo);
+                    parametro.setDouble(6, precio_venta);
+                    parametro.setInt(7, existencia);
+                    parametro.setString(8, fecha_ingreso);
+                    parametro.setInt(9, id);
+                    resultado = parametro.executeUpdate();
+                }
+            } catch (SQLException ex) {
+                System.err.println("Error al actualizar producto: " + ex.getMessage());
+            } finally {
+                if (cn != null) {
+                    cn.cerrar_conexion(); // Cerramos la conexión solo si fue inicializada.
+                }
+            }
+        }
+        return resultado;
+    }
+
+    public int eliminar() {
+        int resultado = 0;
+        String query = "DELETE FROM productos WHERE id_producto = ?;";
+
+        try {
+            cn = new Conexion(); // Inicializamos la conexión
+            cn.abrir_conexion();
+            try (PreparedStatement parametro = cn.conexionDB.prepareStatement(query)) {
+                parametro.setInt(1, id);
+                resultado = parametro.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error al eliminar producto: " + ex.getMessage());
+        } finally {
+            if (cn != null) {
+                cn.cerrar_conexion(); // Cerramos la conexión solo si fue inicializada.
+            }
+        }
+        return resultado;
+    }
+    
+    public HashMap drop_productos(){
     HashMap<String,String[]> drop = new HashMap ();
     try{
         cn = new Conexion ();
@@ -232,5 +266,3 @@ public class Producto {
         return drop; 
     }
 }
-    
-

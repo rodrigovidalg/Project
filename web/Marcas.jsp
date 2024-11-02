@@ -3,6 +3,24 @@
 <%@page import="javax.swing.table.DefaultTableModel"%>
 <%@ page import="Modelo.Conexion" %>
 <%@ page import="java.sql.*" %>
+
+<%@page import="Modelo.Empleado"%>
+<%@page import="javax.servlet.http.HttpSession" %>
+
+<%
+    
+    if (session == null || session.getAttribute("empleado") == null) {
+        response.sendRedirect("index.jsp");
+        return;
+    }
+
+    Empleado empleado = (Empleado) session.getAttribute("empleado");
+%>
+<%
+    response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
+    response.setDateHeader("Expires", 0);
+%>
 <!DOCTYPE html>
 <html>
 <head>

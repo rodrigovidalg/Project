@@ -103,7 +103,7 @@ public class Ventas {
                        + "DATE_FORMAT(v.fecha_ingreso, '%Y-%m-%d') AS fecha_ingreso, "
                        + "vd.id_producto, p.producto, vd.cantidad, vd.precio_unitario "
                        + "FROM ventas v "
-                       + "INNER JOIN cliente c ON v.id_cliente = c.id_cliente "
+                       + "INNER JOIN clientes c ON v.id_cliente = c.id_cliente "
                        + "INNER JOIN empleados e ON v.id_empleado = e.id_empleado "
                        + "INNER JOIN ventas_detalle vd ON v.id_venta = vd.id_venta "
                        + "INNER JOIN productos p ON vd.id_producto = p.id_producto "

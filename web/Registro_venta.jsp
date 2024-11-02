@@ -32,6 +32,8 @@
         <title>Ventas</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     </head>
     <body>
 
@@ -107,7 +109,7 @@
                                 <select name="txt_id_producto" id="txt_id_producto" class="form-control" required>
                                     <%
                                         Producto producto = new Producto();
-                                        HashMap<String,String[]> productosMap = producto.drop_sangre();
+                                        HashMap<String,String[]> productosMap = producto.drop_productos();
                                             System.out.println("Cantidad de productos encontrados: " + productosMap.size());
 
                                         //string id o i es lo mismo solo que es mas representativo el id porque con eso se trabaja
@@ -158,8 +160,27 @@
     </div>
                     
                     
-                    
-                   
+     <div class="container mt-4">
+        <div class="card">               
+            <div class="card-header bg-primary text-white">
+                <h1 class="card-title"><i class="bi bi-cart-dash"></i> Gestión de Ventas</h1>
+               <button type="button" class="btn btn-secondary float-end me-2" data-bs-toggle="modal" onclick="limpiar()" data-bs-target="#modal_nueva_venta">
+                    <i class="bi bi-arrow-90deg-down"></i> Venta Nueva
+                </button>
+                <a href="Cliente.jsp" class="btn btn-secondary float-end me-2">
+                    <i class="bi bi-person-fill-check"></i> Clientes
+                </a>
+                <a href="Empleado.jsp" class="btn btn-secondary float-end me-2">
+                    <i class="bi bi-person"></i> Empleados
+                </a>            
+            </div>    
+    <div class="input-group mb-3 p-4">
+        <input type="text" id="searchField" class="form-control" placeholder="Buscar proveedor..." onkeyup="buscar()">
+        <button class="btn btn-outline-primary" type="button" onclick="buscar()">
+            <i class="bi bi-search"></i> Buscar
+        </button>
+    </div>        
+        
     <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
         <table class="table table-striped table-hover">
             <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
@@ -199,14 +220,12 @@
                     }
                 %>
             </tbody>
-        </div>       
+        </div>     
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
                       
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" onclick="limpiar()"data-bs-target="#modal_nueva_venta">
-                    Venta nueva
-                    </button> 
+                    
         <script>
          function limpiar(){
             $("#txt_id_venta").val(0);
@@ -266,5 +285,27 @@
     }
 
             </script>
+            
+            <script>
+                function buscar() {
+                const searchTerm = document.getElementById('searchField').value.toLowerCase();
+                let found = false;
+
+                // Filtrar filas en la tabla
+                $('#tbl_ventas tr').filter(function() {
+                    // Cambia '0' por el índice de la columna que contiene el nombre del cliente si es diferente
+                    const cliente = $(this).find('td').eq(4).text().toLowerCase(); // Asumiendo que el cliente está en la primera columna
+                    const isMatch = cliente.indexOf(searchTerm) > -1; // Verifica si hay coincidencias en el nombre del cliente
+                    $(this).toggle(isMatch);
+                    if (isMatch) found = true; // Actualiza found si hay coincidencias
+                });
+
+                // Mostrar alerta si no se encontraron resultados
+                if (!found && searchTerm.length > 0) {
+                }
+            }
+
+
+    </script>
     </body>
 </html>

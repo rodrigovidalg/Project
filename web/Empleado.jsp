@@ -68,7 +68,6 @@
                             </thead>
                             <tbody id="tbl_empleados" style="font-size: 13px;">
                                 <%
-                                    Empleado empleado = new Empleado();
                                     DefaultTableModel tabla = new DefaultTableModel();
                                     tabla = empleado.leer();
                                     for (int t = 0; t < tabla.getRowCount(); t++) {

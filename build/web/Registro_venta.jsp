@@ -106,7 +106,7 @@
                         <div class='row mb-3 producto-row'>
                             <div class='col-md-4'>
                                 <label for='id_producto'><b>Producto:</b></label>
-                                <select name="txt_id_producto" id="txt_id_producto" class="form-control" required>
+                                <select name="txt_id_producto" id="txt_id_producto" class="form-control"  required onchange="actualizarPrecioUnitario()"  >
                                     <%
                                         Producto producto = new Producto();
                                         HashMap<String,String[]> productosMap = producto.drop_productos();
@@ -126,7 +126,7 @@
                             </div>
                             <div class='col-md-4'>
                                 <label for='precio_unitario'><b>Precio Unitario:</b></label>
-                                <input type='number' step='.01' name='txt_precio_unitario' class='form-control' id="txt_precio_unitario" required onchange="calcularPrecioTotal()"/>
+                                <input type='number' step='.01' name='txt_precio_unitario' class='form-control' id="txt_precio_unitario" required onchange="calcularPrecioTotal()" />
                             </div>
                         </div>
                         <div class='col-md-4'>
@@ -192,7 +192,7 @@
                     <th>Cliente</th>
                     <th>Empleado</th>
                     <th>Fecha_ingreso</th>
-                    <th>Imagen producto</th>
+                    <th>ID producto</th>
                     <th>Producto</th>
                     <th>Cantidad</th>
                     <th>Precio Unitario</th>
@@ -283,6 +283,18 @@
         // Asignar el precio total al campo correspondiente
         $('#txt_precio_total').val(precioTotal.toFixed(2)); // Formatear a dos decimales
     }
+    
+    function actualizarPrecioUnitario() {
+        const productoSelect = document.getElementById('txt_id_producto');
+        const precioUnitarioInput = document.getElementById('txt_precio_unitario');
+
+        // Obtén el precio del producto seleccionado usando el atributo data-precio
+        const precio = productoSelect.options[productoSelect.selectedIndex].getAttribute('data-precio');
+
+        // Asigna el precio al campo de precio unitario
+        precioUnitarioInput.value = precio;
+    }
+
 
             </script>
             
